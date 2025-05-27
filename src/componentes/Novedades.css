@@ -48,7 +48,7 @@ x
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
   .product-card {
-    max-width: calc(50% - 20px);
+    max-width: calc(80% - 20px);
   }
 }
 
@@ -66,8 +66,8 @@ x
 }
  .products-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     padding: 1rem;
     justify-content: center;
     margin: auto 5px;

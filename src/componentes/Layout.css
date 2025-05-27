@@ -7,7 +7,7 @@
 }
 
 .parrafo {
-  font-size: 30px;
+  font-size: 22px;
   color: #ffffff;
   text-decoration: none;
   padding: 0;
@@ -70,7 +70,7 @@
   gap:10px;
 }
 .logo { 
-  height: 50px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,9 +91,6 @@
   flex: 1;
 }
 
-.main-nav{
-  margin-right: 20px;
-}
 
 .app-footer {
   width: 100vw;

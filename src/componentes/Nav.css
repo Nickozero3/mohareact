@@ -130,3 +130,84 @@
 .mobile-menu-button[aria-expanded="true"] svg {
   transform: rotate(90deg);
 }
+
+/* Estilos base del botón móvil */
+.mobile-menu-button {
+  display: none; /* Oculto en desktop */
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+  position: relative;
+}
+
+/* Estilos del menú principal */
+.main-nav {
+  transition: transform 0.3s ease;
+}
+
+.nav-list {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos para móvil */
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    display: block;
+  }
+
+  .main-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 70%;
+    height: 100vh;
+    transform: translateX(100%);
+    z-index: 1000;
+    padding-top: 4rem;
+  }
+
+  .main-nav.active {
+    transform: translateX(0);
+  }
+
+  .nav-list {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .nav-list a {
+    display: block;
+    padding: 1rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-list a.active-link {
+    color: #00d4ff;
+    font-weight: bold;
+  }
+}
+
+/* Estilos para desktop */
+@media (min-width: 769px) {
+  .main-nav {
+    display: block;
+  }
+
+  .nav-list a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-list a.active-link {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+  }
+}

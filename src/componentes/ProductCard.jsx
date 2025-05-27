@@ -5,13 +5,13 @@ const ProductCard = ({ product }) => (
 
       {product.image ? (
         <img
-          src={`${process.env.PUBLIC_URL}/image/${product.image}`}
+          src={`${process.env.PUBLIC_URL}/images/${product.image}`}
           alt={product.name || `Imagen de ${product.id}`}
           
           className="product-image"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = `${process.env.PUBLIC_URL}/image/placeholder.png`;
+            e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.png`;
           }}
           
         />

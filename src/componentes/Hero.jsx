@@ -9,55 +9,71 @@ const Hero = () => {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-  if (searchTerm.trim().length === 0) {
-    setSuggestions([]);
-    return;
-  }
+    if (searchTerm.trim().length === 0) {
+      setSuggestions([]);
+      return;
+    }
 
-  const filtered = productos
-    .filter(p => {
-      // Busca coincidencias exactas de la cadena completa (no palabras sueltas)
-      return p.name.toLowerCase().includes(searchTerm.toLowerCase());
-    })
-    .map(p => p.name);
+    const filtered = productos
+      .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .slice(0, 5); // Limita a 5 sugerencias
 
-  setSuggestions(filtered);
-}, [searchTerm]);
+    setSuggestions(filtered);
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/productos?busqueda=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm.trim()) {
+      navigate(`/productos?busqueda=${encodeURIComponent(searchTerm)}`);
+    }
   };
 
-  const handleSuggestionClick = (sug) => {
-    setSearchTerm(sug);
+  const handleSuggestionClick = (product) => {
+    setSearchTerm(product.name);
     setSuggestions([]);
-    navigate(`/productos?busqueda=${encodeURIComponent(sug)}`);
+    navigate(`/productos?busqueda=${encodeURIComponent(product.name)}`);
   };
 
   return (
     <section className="hero">
       <h1>Descubrí los mejores dispositivos</h1>
       <p>Celulares de última generación, calidad y precio imbatible</p>
+      
       <form className="search-container" onSubmit={handleSearch} autoComplete="off">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Buscar dispositivo..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button className="btn-cta" type="submit">
-          Ver productos
-        </button>
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar dispositivo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="btn-cta" type="submit">
+            Ver productos
+          </button>
+        </div>
+        
         {suggestions.length > 0 && (
-          <ul className="suggestions">
-            {suggestions.map((sug, index) => (
-              <li key={index} onClick={() => handleSuggestionClick(sug)}>
-                {sug}
-              </li>
+          <div className="suggestions-container">
+            {suggestions.map((product) => (
+              <div 
+                key={product.id} 
+                className="suggestion-item"
+                onClick={() => handleSuggestionClick(product)}
+              >
+                <div className="suggestion-image-container">
+                  <img 
+                    src={`${process.env.PUBLIC_URL}/images/${product.image}`} 
+                    alt={product.name}
+                    onError={(e) => {
+                      e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.jpg`;
+                    }}
+                  />
+                </div>
+                <span className="suggestion-name">{product.name}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </form>
     </section>
