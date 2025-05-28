@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Nav from './Nav';
 import './Layout.css';
 import { Link } from 'react-router-dom';
+import WhatsappButton from './wppButton';
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,9 +45,14 @@ const Layout = () => {
         <Outlet />
       </div>
 
+      <WhatsappButton/>
+
       <footer className="app-footer">
         © {new Date().getFullYear()} Cellstore - Todos los derechos reservados
         <p><b>AV EDEN 144, LA FALDA, CORDOBA</b></p>
+        <p><b>Developed by: <a href="https://instagram.com/Nickozero3" target="_blank" rel="noopener noreferrer" style={{ color: '#E1306C', textDecoration: 'none' }}>
+          Zero3Tech</a></b></p>
+        
       </footer>
     </div>
   );

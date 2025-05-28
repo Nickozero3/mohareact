@@ -1,0 +1,165 @@
+import React, { useState } from 'react';
+import './Upload.css'; // Asegúrate de tener un archivo CSS para estilos
+
+
+const SubirDatos = () => {
+  const [producto, setProducto] = useState({
+    nombre: '',
+    descripcion: '',
+    precio: '',
+    categoria: 'Celulares',
+    subcategoria: '',
+    imagen: null,
+    imagenPreview: null
+  });
+
+  const categorias = {
+    Celulares: ['iPhone', 'Samsung', 'Xiaomi', 'Oppo', 'Motorola'],
+    Cables: ['USB-C', 'Lightning', 'Micro USB', 'HDMI'],
+    Accesorios: ['Protectores', 'Soportes', 'Adaptadores'],
+    Fundas: ['iPhone', 'Samsung', 'Universal'],
+    'Audífonos': ['Inalámbricos', 'Con cable', 'Deportivos'],
+    Cargadores: ['Inalámbricos', 'Rápidos', 'Automotriz'],
+    Otros: ['Varios']
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProducto(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProducto(prev => ({
+          ...prev,
+          imagen: file,
+          imagenPreview: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aquí iría la lógica para subir los datos al servidor
+    console.log('Producto a subir:', producto);
+    alert('Producto enviado para revisión');
+    
+    // Resetear formulario
+    setProducto({
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      categoria: 'Celulares',
+      subcategoria: '',
+      imagen: null,
+      imagenPreview: null
+    });
+  };
+
+  return (
+    <div className="upload-container">
+      <h1 className="upload-title">Sube tus productos con Zero3Tech</h1>
+      
+      <form className="upload-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="nombre">Nombre del Producto:</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            value={producto.nombre}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="descripcion">Descripción:</label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            value={producto.descripcion}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="precio">Precio ($):</label>
+          <input
+            type="number"
+            id="precio"
+            name="precio"
+            value={producto.precio}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="categoria">Categoría:</label>
+            <select
+              id="categoria"
+              name="categoria"
+              value={producto.categoria}
+              onChange={handleChange}
+              required
+            >
+              {Object.keys(categorias).map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="subcategoria">Subcategoría:</label>
+            <select
+              id="subcategoria"
+              name="subcategoria"
+              value={producto.subcategoria}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione...</option>
+              {categorias[producto.categoria]?.map(sub => (
+                <option key={sub} value={sub}>{sub}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="imagen">Imagen del Producto:</label>
+          <input
+            type="file"
+            id="imagen"
+            name="imagen"
+            accept="image/*"
+            onChange={handleImageChange}
+            required
+          />
+          {producto.imagenPreview && (
+            <div className="image-preview">
+              <img src={producto.imagenPreview} alt="Vista previa" />
+            </div>
+          )}
+        </div>
+
+        <button type="submit" className="submit-btn">Subir Producto</button>
+      </form>
+    </div>
+  );
+};
+
+export default SubirDatos;
