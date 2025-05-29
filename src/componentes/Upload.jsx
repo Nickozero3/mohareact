@@ -46,23 +46,44 @@ const SubirDatos = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí iría la lógica para subir los datos al servidor
-    console.log('Producto a subir:', producto);
-    alert('Producto enviado para revisión');
-    
-    // Resetear formulario
-    setProducto({
-      nombre: '',
-      descripcion: '',
-      precio: '',
-      categoria: 'Celulares',
-      subcategoria: '',
-      imagen: null,
-      imagenPreview: null
+    // En tu componente SubirDatos.js
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  const formData = new FormData();
+  formData.append('nombre', producto.nombre);
+  formData.append('descripcion', producto.descripcion);
+  formData.append('precio', producto.precio);
+  formData.append('categoria', producto.categoria);
+  formData.append('subcategoria', producto.subcategoria);
+  formData.append('imagen', producto.imagen);
+
+  try {
+    const response = await fetch('http://localhost:3000/api/productos', {
+      method: 'POST',
+      body: formData,
     });
-  };
+
+    if (response.ok) {
+      alert('Producto subido correctamente');
+      // Resetear formulario
+      setProducto({
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        categoria: 'Celulares',
+        subcategoria: '',
+        imagen: null,
+        imagenPreview: null
+      });
+    } else {
+      throw new Error('Error al subir el producto');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error al subir el producto');
+  }
+};
 
   return (
     <div className="upload-container">

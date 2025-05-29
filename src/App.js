@@ -9,6 +9,7 @@ import Productos from './pages/Productos';
 import Ofertas from './pages/Ofertas';
 import Contacto from './pages/Contacto';
 import SubirDatos from './componentes/Upload';
+import cart from './componentes/Cart';
 // import './App.css';
 
 function ScrollToTop() {
@@ -19,9 +20,13 @@ function ScrollToTop() {
   return null;
 }
 
+
+ 
+
 function App() {
   return (
     <Router>
+      
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

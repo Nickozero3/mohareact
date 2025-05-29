@@ -1,4 +1,6 @@
-const WhatsappButton = ({ phone, message, children }) => {
+const WhatsappButton = ({children }) => {
+    const phone = "5493548554840"; // Replace with your WhatsApp phone number
+    const message = "¡Hola! Estoy interesado en más información sobre los productos de Cellstore.";
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
     
     return (

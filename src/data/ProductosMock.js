@@ -227,6 +227,14 @@ const productsData = [ {
     image: "XiaomiRedmiNote14Pro.jpg",
     price: 499,
   }
+  ,{
+    id: 26,
+    name: "Samsung S20FE",
+    category:  "Samsung",
+    storage: "128gb",
+    price: 200
+
+  }
 ];
 
 
