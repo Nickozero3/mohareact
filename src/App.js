@@ -10,6 +10,7 @@ import Ofertas from './pages/Ofertas';
 import Contacto from './pages/Contacto';
 import SubirDatos from './componentes/Upload';
 import cart from './componentes/Cart';
+import Seleccionado from './componentes/seleccionado';
 // import './App.css';
 
 function ScrollToTop() {
@@ -34,6 +35,9 @@ function App() {
           <Route path="ofertas" element={<Ofertas />} />
           <Route path="contacto" element={<Contacto />} />
           <Route path="subir" element={<SubirDatos />} />
+          <Route path="producto" element={<Seleccionado />} />
+
+          
           {/* Catch-all route for 404 Not Found */}
           <Route path="404" element={<NotFound />} />
           {/* Redirect any unmatched routes to NotFound */}
