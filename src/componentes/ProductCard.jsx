@@ -10,10 +10,14 @@ const ProductCard = ({ product }) => {
   const [fallbackTried, setFallbackTried] = useState(false);
 
   useEffect(() => {
-    // Actualiza la imagen si cambia el producto
-    setFallbackTried(false);
-    setImageSrc(initialSrc);
-  }, [product]);
+  const isFromAPI = product.image?.includes('/uploads/');
+  const calculatedSrc = isFromAPI
+    ? `${process.env.PUBLIC_URL}${product.image}`
+    : `${process.env.PUBLIC_URL}/images/${product.image}`;
+    
+  setFallbackTried(false);
+  setImageSrc(calculatedSrc);
+}, [product]); // ✅ Solo product como dependencia
 
   const handleImageError = () => {
     if (!fallbackTried && !isFromAPI) {
