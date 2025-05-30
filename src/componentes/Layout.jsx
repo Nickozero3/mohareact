@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link} from 'react-router-dom';
 import Nav from './Nav';
 import './Layout.css';
-import { Link } from 'react-router-dom';
 import WhatsappButton from './wppButton';
+import CartIcon from './CartIcon';
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,8 +37,10 @@ const Layout = () => {
               <p className="parrafo">Cellstore</p>
             </div>
           </Link>
+
         </div>
-        <Nav isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+        <div className='nav-container'><Nav isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+        <CartIcon /></div>
       </header>
 
       <div className="main-content">

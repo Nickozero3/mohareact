@@ -228,12 +228,12 @@ const productsData = [ {
     price: 499,
   }
   ,{
-    id: 26,
+    id: 27,
     name: "Samsung S20FE",
     category:  "Samsung",
     storage: "128gb",
+    image: "s20fe.jpg",
     price: 200
-
   }
 ];
 

@@ -46,7 +46,7 @@ const Nav = () => {
       >
         {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
-
+      
       <nav 
         className={`main-nav ${isMobileMenuOpen ? 'active' : ''}`}
         aria-hidden={!isMobileMenuOpen}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Upload.css'; // Asegúrate de tener un archivo CSS para estilos
+import './Subirdatos.css'; // Asegúrate de tener un archivo CSS para estilos
 
 
 const SubirDatos = () => {
@@ -47,44 +47,64 @@ const SubirDatos = () => {
   };
 
     // En tu componente SubirDatos.js
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
   
-  const formData = new FormData();
-  formData.append('nombre', producto.nombre);
-  formData.append('descripcion', producto.descripcion);
-  formData.append('precio', producto.precio);
-  formData.append('categoria', producto.categoria);
-  formData.append('subcategoria', producto.subcategoria);
-  formData.append('imagen', producto.imagen);
+  // Validación de campos requeridos
+  if (!producto.nombre || !producto.descripcion || !producto.precio || !producto.imagen) {
+    alert('Por favor complete todos los campos requeridos');
+    return;
+  }
 
   try {
-    const response = await fetch('http://localhost:3000/api/productos', {
-      method: 'POST',
-      body: formData,
+    const formData = new FormData();
+    formData.append('nombre', producto.nombre);
+    formData.append('descripcion', producto.descripcion);
+    formData.append('precio', producto.precio);
+    formData.append('categoria', producto.categoria);
+    formData.append('subcategoria', producto.subcategoria);
+    formData.append('imagen', producto.imagen, producto.imagen.name);
+
+    console.log('Enviando datos...', {
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: producto.precio,
+      categoria: producto.categoria,
+      subcategoria: producto.subcategoria,
+      imagen: producto.imagen ? producto.imagen.name : 'No hay imagen'
     });
 
-    if (response.ok) {
-      alert('Producto subido correctamente');
-      // Resetear formulario
-      setProducto({
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        categoria: 'Celulares',
-        subcategoria: '',
-        imagen: null,
-        imagenPreview: null
-      });
-    } else {
-      throw new Error('Error al subir el producto');
+    const response = await fetch('http://localhost:5000/api/productos', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error en la respuesta del servidor');
+ 
     }
+
+    alert('Producto subido correctamente!');
+    console.log('Respuesta del servidor:', data);
+    
+    // Resetear formulario
+    setProducto({
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      categoria: 'Celulares',
+      subcategoria: '',
+      imagen: null,
+      imagenPreview: null
+    });
+
   } catch (error) {
-    console.error('Error:', error);
-    alert('Error al subir el producto');
+    console.error('Error al subir producto:', error);
+    alert(`Error: ${error.message}`);
   }
 };
-
   return (
     <div className="upload-container">
       <h1 className="upload-title">Sube tus productos con Zero3Tech</h1>

@@ -1,0 +1,26 @@
+.cart-dropdown-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #ff3d00;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.cart-total {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 2px solid #333;
+  text-align: right;
+}

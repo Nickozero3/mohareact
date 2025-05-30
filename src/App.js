@@ -8,8 +8,8 @@ import Home from './pages/Home';
 import Productos from './pages/Productos';
 import Ofertas from './pages/Ofertas';
 import Contacto from './pages/Contacto';
-import SubirDatos from './componentes/Upload';
-import cart from './componentes/Cart';
+import SubirDatos from './componentes/Subirdatos';
+import Adminpanel from './componentes/Adminpanel';
 import Seleccionado from './componentes/seleccionado';
 // import './App.css';
 
@@ -27,7 +27,7 @@ function ScrollToTop() {
 function App() {
   return (
     <Router>
-      
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -35,6 +35,7 @@ function App() {
           <Route path="ofertas" element={<Ofertas />} />
           <Route path="contacto" element={<Contacto />} />
           <Route path="subir" element={<SubirDatos />} />
+          <Route path="admin" element={<Adminpanel/>} />
           <Route path="producto" element={<Seleccionado />} />
 
           
