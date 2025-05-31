@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './ProductCard.css'; // Asegúrate de tener estilos para el componente
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./ProductCard.css"; // Asegúrate de tener estilos para el componente
 
 const ProductCard = ({ product, addToCart }) => {
   const navigate = useNavigate();
-  const isFromAPI = product.image?.includes('/uploads/');
+  const isFromAPI = product.image?.includes("/uploads/");
   const initialSrc = isFromAPI
     ? `${process.env.PUBLIC_URL}${product.image}`
     : `${process.env.PUBLIC_URL}/images/${product.image}`;
@@ -13,7 +13,7 @@ const ProductCard = ({ product, addToCart }) => {
   const [fallbackTried, setFallbackTried] = useState(false);
 
   useEffect(() => {
-    const isFromAPI = product.image?.includes('/uploads/');
+    const isFromAPI = product.image?.includes("/uploads/");
     const calculatedSrc = isFromAPI
       ? `${process.env.PUBLIC_URL}${product.image}`
       : `${process.env.PUBLIC_URL}/images/${product.image}`;
@@ -54,7 +54,7 @@ const ProductCard = ({ product, addToCart }) => {
       <div className="product-actions">
         <button
           className="product-button"
-          onClick={() => navigate(`/producto/${product.id}`)}
+          onClick={() => navigate(`/seleccionado/${product.id}`)}
         >
           Ver detalles
         </button>

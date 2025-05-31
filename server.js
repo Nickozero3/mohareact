@@ -109,6 +109,19 @@ app.get('/api/productos', async (req, res) => {
   }
 });
 
+// Ruta para obtener un producto por ID
+app.get('/api/productos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await pool.query('SELECT * FROM productos WHERE id = ?', [id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error al obtener producto:', error);
+    res.status(500).json({ error: 'Error al obtener producto' });
+  }
+});
+
 // Middleware para manejo de errores
 app.use((err, req, res, next) => {
   console.error('Error del servidor:', err.message);

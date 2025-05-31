@@ -1,5 +1,10 @@
-const Contacto = () => {
-  return <h1>Página de Contacto</h1>;
+import Contacto from "../componentes/Hud/Contacto";
+import React from 'react';
+
+const Home = () => {
+  return <div>
+            <Contacto/>
+          </div>;
 };
 
-export default Contacto;
+export default Home;

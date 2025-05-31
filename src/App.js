@@ -34,7 +34,7 @@ function App() {
           <Route path="ofertas" element={<Ofertas />} />
           <Route path="contacto" element={<Contacto />} />
           <Route path="admin" element={<Adminpanel/>} />
-          <Route path="producto" element={<Seleccionado />} />
+          <Route path="/seleccionado/:id" element={<Seleccionado />} />
 
           
           {/* Catch-all route for 404 Not Found */}

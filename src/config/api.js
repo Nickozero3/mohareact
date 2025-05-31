@@ -17,6 +17,8 @@ const axiosInstance = axios.create({
 
 export const getProductos = () => axiosInstance.get('/api/productos');
 export const getProductoById = (id) => axiosInstance.get(`/api/productos/${id}`);
+
+
 export const createProducto = (data) => axiosInstance.post('/api/productos', data, {
   headers: {
     'Content-Type': 'multipart/form-data'
