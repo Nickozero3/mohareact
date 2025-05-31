@@ -1,26 +1,40 @@
+/* Contenedor de botones - 100% responsive */
 .product-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  justify-content: space-between;
- margin-inline: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Columnas flexibles */
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0 0.5rem;
+  margin-top: 1rem;
+  box-sizing: border-box;
 }
 
+/* Botones con texto visible */
 .product-button {
   background-color: #007bff;
   color: white;
-  padding: 6px 12px;
+  padding: 0.7rem 0.5rem;
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  width: 100%;
+  min-width: 120px; /* Ancho mínimo para el texto */
+  font-size: clamp(0.8rem, 3vw, 0.9rem); /* Tamaño responsive */
+  text-align: center;
+  white-space: normal; /* Permite saltos de línea */
+  word-break: break-word; /* Rompe palabras largas */
+  overflow: visible; /* Permite que el texto fluya */
+  transition: all 0.2s ease;
 }
 
 .product-button.add-to-cart {
   background-color: #28a745;
 }
 
-.product image {
-  min-width: 1000px;
-  border-radius: 1000px;
-  min-height: fit-content;
+/* Ajustes para texto largo */
+@media (max-width: 480px) {
+  .product-button {
+    padding: 0.8rem 0.3rem; /* Más espacio vertical */
+    font-size: 0.8rem; /* Tamaño fijo en móviles */
+  }
 }
