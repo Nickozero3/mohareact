@@ -87,7 +87,7 @@ const Seleccionado = () => {
           </div>
           
           <p className="producto-descripcion">
-            {producto?.descripcion || 'Descripción no disponible'}
+            {producto?.description || 'Descripción no disponible'}
           </p>
           
           <div className="producto-acciones">
