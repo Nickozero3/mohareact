@@ -2,7 +2,7 @@
 .hero {
   background-image: 
     linear-gradient(to right, rgba(34, 34, 34, 0.8), rgba(68, 68, 68, 0.8)),
-    url("../../public/images/fondo.jpg");
+    url("../../../public/images/fondo.jpg");
   background-size: cover;
   background-position: center;
   color: white;

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Outlet, Link} from 'react-router-dom';
 import Nav from './Nav';
 import './Layout.css';
-import WhatsappButton from './wppButton';
-import CartIcon from './CartIcon';
+import WhatsappButton from '../wppButton';
+import CartIcon from '../Carrito/CartIcon';
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

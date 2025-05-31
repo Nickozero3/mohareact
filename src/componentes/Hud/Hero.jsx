@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Hero.css';
-import productos from '../data/ProductosMock';
+import '../Hud/Hero.css';
+import productos from '../../data/ProductosMock';
 
 const Hero = () => {
   const navigate = useNavigate();

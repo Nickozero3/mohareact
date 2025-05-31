@@ -78,7 +78,6 @@ textarea {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s;
-  margin-top: 1rem;
 }
 
 .submit-btn:hover {
@@ -95,4 +94,41 @@ textarea {
     padding: 1rem;
     margin: 1rem;
   }
+}
+
+/* Estilos para los botones del formulario */
+.form-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  flex: 1;
+}
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  flex: 1;
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f;
 }

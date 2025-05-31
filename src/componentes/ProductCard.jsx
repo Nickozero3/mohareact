@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './ProductCard.css'; // Asegúrate de tener estilos para el componente
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, addToCart }) => {
+  const navigate = useNavigate();
   const isFromAPI = product.image?.includes('/uploads/');
   const initialSrc = isFromAPI
     ? `${process.env.PUBLIC_URL}${product.image}`
@@ -10,14 +13,14 @@ const ProductCard = ({ product }) => {
   const [fallbackTried, setFallbackTried] = useState(false);
 
   useEffect(() => {
-  const isFromAPI = product.image?.includes('/uploads/');
-  const calculatedSrc = isFromAPI
-    ? `${process.env.PUBLIC_URL}${product.image}`
-    : `${process.env.PUBLIC_URL}/images/${product.image}`;
-    
-  setFallbackTried(false);
-  setImageSrc(calculatedSrc);
-}, [product]); // ✅ Solo product como dependencia
+    const isFromAPI = product.image?.includes('/uploads/');
+    const calculatedSrc = isFromAPI
+      ? `${process.env.PUBLIC_URL}${product.image}`
+      : `${process.env.PUBLIC_URL}/images/${product.image}`;
+
+    setFallbackTried(false);
+    setImageSrc(calculatedSrc);
+  }, [product]);
 
   const handleImageError = () => {
     if (!fallbackTried && !isFromAPI) {
@@ -44,9 +47,25 @@ const ProductCard = ({ product }) => {
           </div>
         )}
       </div>
+
       <h3>{product.name}</h3>
       <p className="product-price">${product.price}</p>
-      <button className="product-button">Ver detalles</button>
+
+      <div className="product-actions">
+        <button
+          className="product-button"
+          onClick={() => navigate(`/producto/${product.id}`)}
+        >
+          Ver detalles
+        </button>
+
+        <button
+          className="product-button add-to-cart"
+          onClick={() => addToCart(product)}
+        >
+          Añadir al carrito
+        </button>
+      </div>
     </div>
   );
 };

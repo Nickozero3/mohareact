@@ -18,6 +18,10 @@
     max-width: 100%;
     height: auto;
     border-radius: 10px;
+    min-width: 150px;
+    min-height: 200px;
+    max-width: 150px;
+    max-height: 200px;
   } 
   .image-error {
   width: 100%;

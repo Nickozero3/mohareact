@@ -3,15 +3,14 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import NotFound from './pages/NotFound';
-import Layout from './componentes/Layout';
+import Layout from './componentes/Hud/Layout';
 import Home from './pages/Home';
 import Productos from './pages/Productos';
 import Ofertas from './pages/Ofertas';
 import Contacto from './pages/Contacto';
-import SubirDatos from './componentes/Subirdatos';
-import Adminpanel from './componentes/Adminpanel';
+import Adminpanel from './componentes/AdminPanel/AdminPanel';
 import Seleccionado from './componentes/seleccionado';
-// import './App.css';
+
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -34,7 +33,6 @@ function App() {
           <Route path="productos" element={<Productos />} />
           <Route path="ofertas" element={<Ofertas />} />
           <Route path="contacto" element={<Contacto />} />
-          <Route path="subir" element={<SubirDatos />} />
           <Route path="admin" element={<Adminpanel/>} />
           <Route path="producto" element={<Seleccionado />} />
 

@@ -1,5 +1,5 @@
-import Hero from "../componentes/Hero";
-import Novedades from "../componentes/Novedades";
+import Hero from "../componentes/Hud/Hero";
+import Novedades from "../componentes/Hud/Novedades";
 
 const Home = () => {
   return <div>

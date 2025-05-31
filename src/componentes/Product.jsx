@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getProductos} from "../config/api"; // 👈 usa la función del api.js
 import productosMock from "../data/ProductosMock";
-import ProductCard from "../componentes/ProductCard";
+import ProductCard from "./ProductCard";
 import "./Product.css";
 
 const Productos = () => {
