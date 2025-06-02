@@ -32,7 +32,7 @@ const ProductCard = ({ product, addToCart }) => {
   };
 
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={() => navigate(`/seleccionado/${product.id}`)}>
       <div className="product-image-container">
         {product.image ? (
           <img
@@ -52,12 +52,12 @@ const ProductCard = ({ product, addToCart }) => {
       <p className="product-price">${product.price}</p>
 
       <div className="product-actions">
-        <button
+        {/* <button
           className="product-button"
-          onClick={() => navigate(`/seleccionado/${product.id}`)}
+          
         >
           Ver detalles
-        </button>
+        </button> */}
 
         <button
           className="product-button add-to-cart"
