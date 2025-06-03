@@ -170,7 +170,24 @@ input[type="file"] {
   .form-content-wrapper {
     flex-direction: column;
   }
-
+  .form-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 50%;
+  }
+  .image-section,
+  .data-section {
+    flex: 1 1 80%;
+  }
+  .upload-container
+  {
+    width: 85%;
+    max-width: none;
+    padding: 1rem;
+  }
+  .upload-form {
+    gap: 1rem;
+  }
   .form-buttons {
     flex-direction: column;
     align-items: stretch;
