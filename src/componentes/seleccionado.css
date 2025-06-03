@@ -22,6 +22,7 @@
   background: none;
   border: none;
   color: #4a6baf;
+  background-color: #7575752a;
   font-size: 1rem;
   cursor: pointer;
   padding: 0.5rem 1rem;
@@ -70,7 +71,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  max-height: 500px;
+  max-height: 350px;
 }
 
 /* Información del producto */

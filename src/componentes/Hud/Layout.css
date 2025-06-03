@@ -7,12 +7,13 @@
 }
 
 .parrafo {
-  font-size: 22px;
+  font-size: 26px;
   color: #ffffff;
   text-decoration: none;
   padding: 0;
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  margin-top: auto;
+  font-family: 'Qilka', sans-serif;
   font-weight: 400;
 }
 .nav-container {
@@ -27,6 +28,13 @@
   font-family: 'Montserrat';
   src: url('../../data/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
   font-style: italic;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: 'Qilka';
+  src: url('../../data/Qilka-Bold.ttf') format('truetype');
+  font-style: normal;
   font-weight: 100 900;
 }
 
@@ -125,7 +133,7 @@
 }
 
 .nav-list a:hover {
-  color: pink; /* Usa tu color rojo existente */
+  color: rgb(110, 51, 248); /* Usa tu color rojo existente */
 }
 
 /* Responsive (añadir) */

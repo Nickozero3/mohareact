@@ -49,15 +49,9 @@ const ProductCard = ({ product, addToCart }) => {
       </div>
 
       <h3>{product.name}</h3>
-      <p className="product-price">${product.price}</p>
+      <p className="product-price">${product.price}</p> 
 
       <div className="product-actions">
-        {/* <button
-          className="product-button"
-          
-        >
-          Ver detalles
-        </button> */}
 
         <button
           className="product-button add-to-cart"

@@ -15,13 +15,14 @@ const Seleccionado = () => {
     const idNum = Number(productId);
     const productoEncontrado = productosMock.find(p => p.id === idNum);
     
-    return productoEncontrado || {
+    return productoEncontrado || // si no se encuentra, retorna al path /productos
+    {
       id: idNum,
-      nombre: `Producto ${idNum}`,
-      imagen: 'https://via.placeholder.com/400',
-      descripcion: `Descripción para el producto ${idNum}`,
-      precio: (idNum * 10 + 9.99).toFixed(2),
-      categoria: 'General'
+      name: 'Producto no encontrado',
+      description: 'Este producto no está en la base de datos.',
+      price: 0.00,
+      image: 'placeholder.png', // Asegúrate de tener un placeholder en tu carpeta de imágenes
+      categoria: 'N/A',
     };
   };
 
@@ -32,9 +33,9 @@ const Seleccionado = () => {
         
         if (response.data) {
           setProducto(response.data);
-        } else {
-          setProducto(buscarEnMocks(id));
-          setUsingMock(true);
+        // } else {
+        //   setProducto(buscarEnMocks(id));
+        //   setUsingMock(true);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -66,7 +67,7 @@ const Seleccionado = () => {
         <div className="producto-imagen-container">
           <img 
   src={producto?.imagen || `${process.env.PUBLIC_URL}/images/${producto.image}`}
-  alt={producto?.nombre || 'Imagen no disponible'}
+  alt={producto?.nombre || producto.name || 'Imagen no disponible'}
   onError={(e) => {
     e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.png`;
     e.target.alt = 'Imagen no disponible - placeholder';
@@ -75,19 +76,19 @@ const Seleccionado = () => {
         </div>
         
         <div className="producto-info">
-          <h1>{producto?.name || 'Nombre no disponible'}</h1>
+          <h1>{producto?.nombre || producto.name || 'Nombre no disponible'}</h1>
           
           <div className="producto-meta">
             <span className="producto-precio">
-              ${producto?.price?.toFixed(2) || '0.00'}
+              ${producto?.price?.toFixed(2) || producto.precio || '0.00'}
             </span>
             {producto?.categoria && (
-              <span className="producto-categoria">{producto.category}</span>
+              <span className="producto-categoria">{producto.categoria || producto.category}</span>
             )}
           </div>
           
           <p className="producto-descripcion">
-            {producto?.description || 'Descripción no disponible'}
+            {producto?.description || producto.descripcion || 'Descripción no disponible'}
           </p>
           
           <div className="producto-acciones">

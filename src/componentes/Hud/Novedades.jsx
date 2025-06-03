@@ -16,9 +16,14 @@ const ProductSection = () => {
         const apiResponse = await getProductos();
         
         if (apiResponse.data?.length > 0) {
-          // Selecciona 4 productos aleatorios de la API
-          const shuffled = [...apiResponse.data].sort(() => 0.5 - Math.random());
+          // // Selecciona 4 productos aleatorios de la API
+          // const shuffled = [...apiResponse.data].sort(() => 0.5 - Math.random());
+          // setRandomProducts(shuffled.slice(0, 4));
+
+          //Selecciona los ultimos 4 productos de la API con el ultimo como primero
+          const shuffled = [...apiResponse.data].reverse();
           setRandomProducts(shuffled.slice(0, 4));
+        
         } else {
           throw new Error("La API no devolvió datos");
         }
@@ -27,7 +32,7 @@ const ProductSection = () => {
         setUsingMock(true);
         setError("Mostrando datos de demostración");
         // Selecciona 4 productos aleatorios del mock
-        const shuffled = [...productosMock].sort(() => 0.5 - Math.random());
+        const shuffled = [...productosMock].reverse(() => 0.5 - Math.random());
         setRandomProducts(shuffled.slice(0, 4));
       } finally {
         setLoading(false);

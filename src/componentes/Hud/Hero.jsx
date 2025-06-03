@@ -1,25 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Hud/Hero.css';
-import productos from '../../data/ProductosMock';
+// import productos from '../../data/ProductosMock';
 
 const Hero = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-
-  useEffect(() => {
-    if (searchTerm.trim().length === 0) {
+useEffect(() => {
+  const fetchProducts = async () => {
+    if (!searchTerm.trim()) {
       setSuggestions([]);
       return;
     }
 
-    const filtered = productos
-      .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      .slice(0, 5); // Limita a 5 sugerencias
+    try {
+      // First try to fetch from API
+      const apiResponse = await fetch('http://localhost:5000/api/productos');
+      let products = [];
 
-    setSuggestions(filtered);
-  }, [searchTerm]);
+      if (apiResponse.ok) {
+        const apiData = await apiResponse.json();
+        // Normalize API data (Spanish to English property names)
+        products = (apiData.products || apiData.data || apiData).map(item => ({
+          id: item.id,
+          name: item.nombre,    // español -> inglés
+          price: item.precio,
+          image: item.imagen || `${process.env.PUBLIC_URL}/images/placeholder.jpg`,
+          description: item.descripcion
+
+        }));
+      } else {
+        // If API fails, load mock data (already in English)
+        const mockResponse = await fetch(`${process.env.PUBLIC_URL}/data/ProductosMock.json`);
+        products = await mockResponse.json();
+      }
+      
+
+      // Filter using normalized property names
+      const filtered = products
+        .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .slice(0, 4);
+
+      setSuggestions(filtered);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setSuggestions([]);
+    }
+  };
+
+  const debounceTimer = setTimeout(fetchProducts, 300);
+  return () => clearTimeout(debounceTimer);
+}, [searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -48,7 +80,7 @@ const Hero = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="btn-cta" type="submit">
+          <button className="btn-cta" type="submit" >
             Ver productos
           </button>
         </div>
