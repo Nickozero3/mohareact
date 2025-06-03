@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteProducto } from "../../config/api";
-import SubirDatos from "../Subirdatos";
+import SubirDatos from "./Subirdatos";
 import { FaPlus } from "react-icons/fa";
 import "./ListaProductos.css";
 
@@ -30,6 +30,18 @@ const ListarProductos = () => {
     };
     fetchProductos();
   }, []);
+  
+  useEffect(() => {
+  if (showModal) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+
+  return () => {
+    document.body.style.overflow = ''; // limpiar en caso de que se desmonte
+  };
+}, [showModal]);
 
   // Eliminar producto
   const eliminarProducto = async (id) => {
@@ -109,7 +121,7 @@ const ListarProductos = () => {
             Buscar
           </button>
         </form>
-        
+
         {/* Botón para añadir producto */}
 
         <div className="add-button-container">
@@ -119,7 +131,6 @@ const ListarProductos = () => {
           </button>
         </div>
 
-        
         {/* Sugerencias */}
         {suggestions.length > 0 && (
           <ul className="sugerencias-lista">
@@ -134,8 +145,6 @@ const ListarProductos = () => {
             ))}
           </ul>
         )}
-        
-        
       </div>
 
       {/* Modal para añadir producto */}

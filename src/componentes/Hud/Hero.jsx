@@ -19,23 +19,10 @@ useEffect(() => {
       const apiResponse = await fetch('http://localhost:5000/api/productos');
       let products = [];
 
-      if (apiResponse.ok) {
-        const apiData = await apiResponse.json();
-        // Normalize API data (Spanish to English property names)
-        products = (apiData.products || apiData.data || apiData).map(item => ({
-          id: item.id,
-          name: item.nombre,    // español -> inglés
-          price: item.precio,
-          image: item.imagen || `${process.env.PUBLIC_URL}/images/placeholder.jpg`,
-          description: item.descripcion
-
-        }));
-      } else {
-        // If API fails, load mock data (already in English)
-        const mockResponse = await fetch(`${process.env.PUBLIC_URL}/data/ProductosMock.json`);
-        products = await mockResponse.json();
+     if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        products = data;
       }
-      
 
       // Filter using normalized property names
       const filtered = products
