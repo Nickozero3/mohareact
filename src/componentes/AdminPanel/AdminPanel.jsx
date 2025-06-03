@@ -4,7 +4,7 @@ const adminPanel = () => {
     return (
        <div>
         <div className="admin-panel">
-            <h1 className="text-2xl font-bold mb-4">Panel de Administración de Productos</h1>
+            <h1 className="titulo">Panel de Administración de Productos</h1>
 
         </div>
             <ListarProductos />

@@ -24,6 +24,7 @@
 .buscador-container {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   flex-grow: 1;
   gap: 10px;
 }
@@ -138,7 +139,7 @@
   padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
-  margin: 0 5px;
+  margin: 2.5% 5px;
   font-size: 0.9rem;
   transition: opacity 0.2s;
 }

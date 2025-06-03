@@ -139,7 +139,6 @@
 /* Responsive (añadir) */
 @media (max-width: 768px) {
   .app-header {
-    flex-wrap: wrap;
     padding: 10px;
   }
   

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ProductCard.css"; // Asegúrate de tener estilos para el componente
+import "./ProductCard.css";
 
 const ProductCard = ({ product, addToCart }) => {
   const navigate = useNavigate();
@@ -31,9 +31,16 @@ const ProductCard = ({ product, addToCart }) => {
     }
   };
 
+  const handleCardClick = (e) => {
+    // Evitar la navegación si el click proviene del botón
+    if (!e.target.closest('.product-actions')) {
+      navigate(`/seleccionado/${product.id}`);
+    }
+  };
+
   return (
-    <div className="product-card" >
-      <div className="product-image-container" onClick={() => navigate(`/seleccionado/${product.id}`)}>
+    <div className="product-card" onClick={handleCardClick}>
+      <div className="product-image-container">
         {product.image ? (
           <img
             src={imageSrc}
@@ -48,14 +55,18 @@ const ProductCard = ({ product, addToCart }) => {
         )}
       </div>
 
-      <h3 onClick={() => navigate(`/seleccionado/${product.id}`)}>{product.name}</h3>
-      <p className="product-price" onClick={() => navigate(`/seleccionado/${product.id}`)}>${product.price}</p> 
+      <div className="product-info">
+        <h3>{product.name}</h3>
+        <p className="product-price">${product.price}</p>
+      </div>
 
-      <div className="product-actions" >
-
+      <div className="product-actions" onClick={(e) => e.stopPropagation()}>
         <button
           className="product-button add-to-cart"
-          onClick={() => addToCart(product)}
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(product);
+          }}
         >
           Añadir al carrito
         </button>
