@@ -26,7 +26,7 @@ useEffect(() => {
 
       // Filter using normalized property names
       const filtered = products
-        .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(p => p.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
         .slice(0, 4);
 
       setSuggestions(filtered);
@@ -43,14 +43,14 @@ useEffect(() => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/productos?busqueda=${encodeURIComponent(searchTerm)}`);
+      navigate(`api/productos?busqueda=${encodeURIComponent(searchTerm)}`);
     }
   };
 
   const handleSuggestionClick = (product) => {
-    setSearchTerm(product.name);
+    setSearchTerm(product.nombre);
     setSuggestions([]);
-    navigate(`/productos?busqueda=${encodeURIComponent(product.name)}`);
+    navigate(`api/productos?busqueda=${encodeURIComponent(product.nombre)}`);
   };
 
   return (
@@ -82,14 +82,14 @@ useEffect(() => {
               >
                 <div className="suggestion-image-container">
                   <img 
-                    src={`${process.env.PUBLIC_URL}/images/${product.image}`} 
-                    alt={product.name}
+                    src={`${process.env.PUBLIC_URL}${product.imagen}`} 
+                    alt={product.nombre}
                     onError={(e) => {
                       e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.jpg`;
                     }}
                   />
                 </div>
-                <span className="suggestion-name">{product.name}</span>
+                <span className="suggestion-name">{product.nombre}</span>
               </div>
             ))}
           </div>

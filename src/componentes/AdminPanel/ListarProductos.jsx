@@ -61,7 +61,7 @@ const ListarProductos = () => {
  //modificar Producto 
   const modificarProducto = async (id, updatedData) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/productos/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/productos/${id}` , {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -189,6 +189,8 @@ const ListarProductos = () => {
           </div>
         </div>
       )}
+
+     
 
       {/* Tabla de productos */}
       <table className="productos-table">

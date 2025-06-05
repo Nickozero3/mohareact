@@ -13,7 +13,7 @@
   padding: 0;
   margin: 0;
   margin-top: auto;
-  font-family: 'Qilka', sans-serif;
+  font-family: "Qilka", sans-serif;
   font-weight: 400;
 }
 .nav-container {
@@ -25,32 +25,33 @@
   gap: 20px;
 }
 @font-face {
-  font-family: 'Montserrat';
-  src: url('../../data/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("../../data/Montserrat-Italic-VariableFont_wght.ttf")
+    format("truetype");
   font-style: italic;
   font-weight: 100 900;
 }
 
 @font-face {
-  font-family: 'Qilka';
-  src: url('../../data/Qilka-Bold.ttf') format('truetype');
+  font-family: "Qilka";
+  src: url("../../data/Qilka-Bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 100 900;
 }
 
-.app-header{
+.app-header {
   display: flex;
-  flex-direction:row ;
+  flex-direction: row;
   color: white;
   background-color: black;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px;}
-
+  padding: 20px 20px;
+}
 
 .container {
   display: flex;
-  
+
   flex-wrap: wrap;
   align-content: start;
 }
@@ -71,21 +72,21 @@
   height: 75%;
 }
 
-.logo-container{
+.logo-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-right: 20px;
 }
-.logodiv{
+.logodiv {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap:10px;
+  gap: 10px;
 }
-.logo { 
+.logo {
   height: 35px;
   display: flex;
   align-items: center;
@@ -107,7 +108,6 @@
   flex: 1;
 }
 
-
 .app-footer {
   width: 100vw;
   background-color: #000;
@@ -123,8 +123,8 @@
   gap: 1.5rem;
   padding: 0;
   margin: 0;
-  text-decoration: none !important; }
-
+  text-decoration: none !important;
+}
 
 .nav-list a {
   text-decoration: none;
@@ -141,18 +141,17 @@
   .app-header {
     padding: 10px;
   }
-  
+
   .logo-container {
     justify-content: flex-start;
   }
-  
+
   .nav-list {
     border-radius: 8px solid #ccc;
     color: black;
     padding: 10px;
     justify-content: space-around;
     margin-top: 10px;
-    
   }
   .nav-list a {
     padding: 0.5rem 1rem;
@@ -178,6 +177,6 @@
 
 a {
   text-decoration: none;
-  
+
   color: inherit;
 }
