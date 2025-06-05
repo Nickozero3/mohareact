@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:5000',
+  BASE_URL: 'http://localhost:5000', 
   TIMEOUT: 5000,
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json'

@@ -1,6 +1,5 @@
 /* Estilos generales del contenedor */
 .listar-productos-container {
-  margin: 20px;
   padding: 20px;
 }
 
@@ -139,7 +138,7 @@
   padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
-  margin: 2.5% 5px;
+  margin: 2.5% 0px;
   font-size: 0.9rem;
   transition: opacity 0.2s;
 }
