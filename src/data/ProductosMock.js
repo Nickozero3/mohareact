@@ -226,6 +226,7 @@ const productsData = [ {
     storage: "512 GB",
     image: "XiaomiRedmiNote14Pro.jpg",
     price: 499,
+    description: "El Xiaomi Redmi Note 14 Pro es un smartphone con pantalla AMOLED de 6.67 pulgadas, procesador MediaTek Dimensity 1080, cámara cuádruple de 108 MP y batería de 5000 mAh.",
   }
   ,{
     id: 27,
@@ -233,7 +234,8 @@ const productsData = [ {
     category:  "Samsung",
     storage: "128gb",
     image: "s20fe.jpg",
-    price: 200
+    price: 200,
+    description: "El Samsung Galaxy S20 FE es un smartphone con pantalla Super AMOLED de 6.5 pulgadas, procesador Exynos 990, cámara triple de 12 MP y batería de 4500 mAh.",
   }
 ];
 
