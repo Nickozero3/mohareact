@@ -58,7 +58,31 @@ const ListarProductos = () => {
     }
   };
 
-  // Generar sugerencias y filtrar tabla
+ //modificar Producto 
+  const modificarProducto = async (id, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/productos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+      if (!response.ok) {
+        throw new Error("Error al modificar el producto");
+      }
+      const updatedProduct = await response.json();
+        setProductos((prev) =>
+          prev.map((p) => (p.id === id ? updatedProduct : p))
+        );
+      } catch (error) {
+        console.error("Error al modificar el producto:", error);
+        alert("No se pudo modificar el producto");
+      }
+    };
+
+
+  // Generar sugerencias y filtrar tabla (buscar por nombre o id)
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
       setSuggestions([]);
@@ -68,7 +92,8 @@ const ListarProductos = () => {
 
     const term = searchTerm.toLowerCase();
     const filtered = productos.filter((p) =>
-      p.nombre.toLowerCase().includes(term)
+      p.nombre.toLowerCase().includes(term) ||
+      p.id.toString().includes(term)
     );
 
     setSuggestions(filtered.slice(0, 5));
@@ -184,7 +209,7 @@ const ListarProductos = () => {
                 <td>${producto.precio}</td>
                 <td>
                   <button
-                    onClick={() => console.log("Editar:", producto.id)}
+                    onClick={() => modificarProducto(producto.id)}
                     className="action-button edit-button"
                   >
                     Editar

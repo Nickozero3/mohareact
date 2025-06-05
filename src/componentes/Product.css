@@ -10,7 +10,7 @@
   overflow: hidden;
   border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra más realista */
+  box-shadow: 7px 5px 14px rgba(0, 0, 0, 0.705); /* Sombra en ángulo de 45 grados */
   text-align: left;
   display: flex; /* Activa flexbox */
   flex-direction: column; /* Apila elementos verticalmente */

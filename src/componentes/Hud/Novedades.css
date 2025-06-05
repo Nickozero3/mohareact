@@ -70,6 +70,7 @@ x
     gap: 20px;
     padding: 1rem;
     justify-content: center;
+    margin-bottom: 10px;
     margin: auto 5px;
   }
 
@@ -78,6 +79,7 @@ x
     background: white;
     border-radius: 10px;
     padding: 1rem;
+    margin-bottom: 10px;
     box-shadow: 0 0 10x #ccc;
     text-align: center;
   }

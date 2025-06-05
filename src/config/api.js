@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:5000', 
+  BASE_URL: 'http://localhost:5000' || 'https://api.tu-dominio.com', 
   TIMEOUT: 5000,
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json'
@@ -14,6 +14,15 @@ const axiosInstance = axios.create({
   timeout: API_CONFIG.TIMEOUT,
   headers: API_CONFIG.DEFAULT_HEADERS
 });
+
+// Interceptor para manejar errores globalmente
+axiosInstance.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 export const getProductos = () => axiosInstance.get('/api/productos');
 export const getProductoById = (id) => axiosInstance.get(`/api/productos/${id}`);
