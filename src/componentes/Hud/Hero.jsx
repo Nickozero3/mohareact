@@ -85,7 +85,7 @@ useEffect(() => {
                     src={`${process.env.PUBLIC_URL}${product.imagen}`} 
                     alt={product.nombre}
                     onError={(e) => {
-                      e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.jpg`;
+                      e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.png`;
                     }}
                   />
                 </div>
