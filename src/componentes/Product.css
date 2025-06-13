@@ -85,3 +85,39 @@
   margin-bottom: 20px;
   color: #666;
 }
+
+/* Product.css - Añade al final del archivo */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.pagination button:hover {
+  background: #f0f0f0;
+}
+
+.pagination button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.page-info {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 0.9em;
+}

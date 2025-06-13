@@ -8,17 +8,17 @@ const cors = require('cors');
 
 const app = express();
 
-// Configuración CORS para permitir frontend React
+// Configuración CORS
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Middleware para servir imágenes estáticas
+// Middleware para imágenes estáticas
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// Configuración Multer para guardar imágenes en public/uploads
+// Configuración Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, 'public', 'uploads'));
@@ -38,7 +38,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-// Conexión a base de datos MySQL
+// Conexión a MySQL
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -46,6 +46,50 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'cellstore_bd',
   waitForConnections: true,
   connectionLimit: 10
+});
+
+// Función de limpieza de imágenes
+async function cleanUnusedImages() {
+  try {
+    console.log('🔍 Iniciando limpieza de imágenes...');
+    const [products] = await pool.query('SELECT imagen FROM productos WHERE imagen IS NOT NULL');
+    const usedImages = products.map(p => p.imagen ? path.basename(p.imagen) : null).filter(Boolean);
+
+    const uploadsPath = path.join(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadsPath)) {
+      fs.mkdirSync(uploadsPath, { recursive: true });
+      return { success: true, message: '📁 Carpeta uploads creada', deletedCount: 0 };
+    }
+
+    const allFiles = fs.readdirSync(uploadsPath);
+    const imageFiles = allFiles.filter(file => ['.jpg', '.jpeg', '.png', '.webp'].includes(path.extname(file).toLowerCase()));
+    const unusedImages = imageFiles.filter(img => !usedImages.includes(img));
+
+    let deletedCount = 0;
+    unusedImages.forEach(img => {
+      try {
+        fs.unlinkSync(path.join(uploadsPath, img));
+        deletedCount++;
+        console.log(`🗑️ Eliminada: ${img}`);
+      } catch (err) {
+        console.error(`❌ Error eliminando ${img}:`, err.message);
+      }
+    });
+
+    console.log(`✅ Limpieza completada. Eliminadas: ${deletedCount} imágenes`);
+    return { success: true, totalImages: imageFiles.length, unusedImages: unusedImages.length, deletedCount };
+  } catch (error) {
+    console.error('🔥 Error en limpieza:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Endpoint para limpieza manual
+app.get('/api/cleanup-images', async (req, res) => {
+  const result = await cleanUnusedImages();
+  result.success 
+    ? res.json(result)
+    : res.status(500).json(result);
 });
 
 // Crear producto
@@ -116,66 +160,45 @@ app.get('/api/productos/:id', async (req, res) => {
   }
 });
 
-
+// Actualizar producto
 app.put('/api/productos/:id', upload.single('imagen'), async (req, res) => {
   const { id } = req.params;
-  console.log(`Iniciando actualización para producto ID: ${id}`);
-
   try {
-    // 1. Validar datos básicos
     const { nombre, precio, descripcion, categoria, subcategoria } = req.body;
     if (!nombre || !precio || !categoria || !subcategoria) {
-      console.log('Faltan campos obligatorios');
       return res.status(400).json({ 
         success: false,
-        error: 'Faltan campos obligatorios',
-        requiredFields: ['nombre', 'precio', 'categoria', 'subcategoria']
+        error: 'Faltan campos obligatorios'
       });
     }
 
-    // 2. Obtener producto actual (para manejo de imagen)
-    const [currentProduct] = await pool.query(
-      'SELECT imagen FROM productos WHERE id = ?', 
-      [id]
-    );
-    
+    const [currentProduct] = await pool.query('SELECT imagen FROM productos WHERE id = ?', [id]);
     if (currentProduct.length === 0) {
-      console.log(`Producto con ID ${id} no encontrado`);
       return res.status(404).json({ 
         success: false,
-        error: 'Producto no encontrado'
+        error: 'Producto no encontrado' 
       });
     }
 
-    // 3. Manejo de la imagen
     let imagenPath = currentProduct[0].imagen;
     if (req.file) {
-      console.log('Nueva imagen recibida:', req.file.filename);
-      
-      // Eliminar imagen anterior si existe
       if (imagenPath) {
         const oldPath = path.join(__dirname, 'public', imagenPath);
         if (fs.existsSync(oldPath)) {
-          console.log(`Eliminando imagen anterior: ${oldPath}`);
           fs.unlinkSync(oldPath);
         }
       }
       imagenPath = `/uploads/${req.file.filename}`;
-    } else {
-      console.log('No se recibió nueva imagen, manteniendo la existente');
     }
 
-    // 4. Actualizar en la base de datos
-    console.log('Ejecutando consulta UPDATE...');
-    const [updateResult] = await pool.query(
+    const [result] = await pool.query(
       `UPDATE productos SET 
         nombre = ?, 
         precio = ?, 
         descripcion = ?, 
         categoria = ?, 
         subcategoria = ?, 
-        imagen = ?,
-        updated_at = NOW()
+        imagen = ?
        WHERE id = ?`,
       [
         nombre,
@@ -188,40 +211,24 @@ app.put('/api/productos/:id', upload.single('imagen'), async (req, res) => {
       ]
     );
 
-    if (updateResult.affectedRows === 0) {
-      console.log('No se afectaron filas en la actualización');
+    if (result.affectedRows === 0) {
       return res.status(500).json({ 
         success: false,
-        error: 'No se pudo actualizar el producto'
+        error: 'No se pudo actualizar el producto' 
       });
     }
 
-    // 5. Obtener el producto COMPLETO actualizado
-    console.log('Obteniendo producto actualizado...');
-    const [updatedProduct] = await pool.query(
-      'SELECT * FROM productos WHERE id = ?', 
-      [id]
-    );
-
-    if (updatedProduct.length === 0) {
-      console.error('Error crítico: Producto no encontrado después de actualización');
-      return res.status(500).json({
-        success: false,
-        error: 'Error interno: No se pudo recuperar el producto actualizado'
-      });
-    }
-
-    console.log('Actualización exitosa, devolviendo producto:', updatedProduct[0]);
+    const [updatedProduct] = await pool.query('SELECT * FROM productos WHERE id = ?', [id]);
+    
     res.json({ 
       success: true,
-      producto: updatedProduct[0], // Asegurarse de devolver esto
+      producto: updatedProduct[0],
       message: 'Producto actualizado correctamente'
     });
 
   } catch (error) {
-    console.error('Error en PUT /api/productos:', error);
+    console.error('Error al actualizar producto:', error);
     
-    // Limpiar archivo subido si hubo error
     if (req.file) {
       const tempPath = path.join(__dirname, 'public', 'uploads', req.file.filename);
       if (fs.existsSync(tempPath)) {
@@ -237,17 +244,17 @@ app.put('/api/productos/:id', upload.single('imagen'), async (req, res) => {
   }
 });
 
-
-
-
-// Middleware global de errores
+// Manejo de errores
 app.use((err, req, res, next) => {
   console.error('Error del servidor:', err.message);
   res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-// Iniciar servidor
+// Iniciar servidor con limpieza automática
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  setTimeout(async () => {
+    await cleanUnusedImages();
+  }, 3000);
 });

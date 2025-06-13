@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getProductos} from "../config/api"; // 👈 usa la función del api.js
+import { getProductos } from "../config/api";
 import productosMock from "../data/ProductosMock";
 import ProductCard from "./ProductCard";
 import "./Product.css";
@@ -11,13 +11,15 @@ const Productos = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usingMock, setUsingMock] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   const searchTerm = searchParams.get('busqueda') || '';
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiResponse = await getProductos(); // 👈 llamada a la API limpia
+        const apiResponse = await getProductos();
         
         if (apiResponse.data?.length > 0) {
           setProducts(apiResponse.data);
@@ -37,13 +39,22 @@ const Productos = () => {
     fetchData();
   }, []);
 
-  const filteredProducts = searchTerm
-    ? products.filter(product =>
-        String(product.nombre || product.name || '')
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      )
-    : products;
+  // Filtrar productos según término de búsqueda
+const filteredProducts = searchTerm
+  ? products.filter(product =>
+      String(product.nombre || product.name || '')
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+  : products;
+  
+  // Calcular productos para la página actual
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Cambiar página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (loading) {
     return (
@@ -81,20 +92,39 @@ const Productos = () => {
           {searchTerm && <p>Intenta con otro término de búsqueda.</p>}
         </div>
       ) : (
-        <div className="products-container">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id || `${product.name}_${Math.random().toString(36).slice(2, 9)}`}
-              product={{
-                id: product.id,
-                name: product.nombre || product.name || "Producto sin nombre",
-                price: product.precio || product.price || 0,
-                image: product.imagen || product.image || 'placeholder.jpg',
-                description: product.descripcion || product.description || ''
-              }}
-            />
-          ))}
-        </div>
+        <>
+          <div className="products-container">
+            {currentProducts.map((product) => (
+              <ProductCard
+                key={product.id || `${product.name}_${Math.random().toString(36).slice(2, 9)}`}
+                product={{
+                  id: product.id,
+                  name: product.nombre || product.name || "Producto sin nombre",
+                  price: product.precio || product.price || 0,
+                  image: product.imagen || product.image || 'placeholder.jpg',
+                  description: product.descripcion || product.description || ''
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Componente de paginación */}
+          <div className="pagination">
+            {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? "active" : ""}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+
+          <div className="page-info">
+            Mostrando {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} de {filteredProducts.length} productos
+          </div>
+        </>
       )}
     </main>
   );

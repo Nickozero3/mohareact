@@ -1,56 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import productosMock from '../../data/ProductosMock';
 import '../Hud/Hero.css';
-// import productos from '../../data/ProductosMock';
 
 const Hero = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-useEffect(() => {
-  const fetchProducts = async () => {
-    if (!searchTerm.trim()) {
-      setSuggestions([]);
-      return;
-    }
+  const [usingMock, setUsingMock] = useState(false);
 
-    try {
-      // First try to fetch from API
-      const apiResponse = await fetch('http://localhost:5000/api/productos');
-      let products = [];
-
-     if (apiResponse.ok) {
-        const data = await apiResponse.json();
-        products = data;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!searchTerm.trim()) {
+        setSuggestions([]);
+        return;
       }
 
-      // Filter using normalized property names
-      const filtered = products
-        .filter(p => p.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
-        .slice(0, 4);
+      try {
+        // Primero intentamos con la API
+        const apiResponse = await fetch('http://localhost:5000/api/productos');
+        let products = [];
 
-      setSuggestions(filtered);
-    } catch (error) {
-      console.error('Fetch error:', error);
-      setSuggestions([]);
-    }
-  };
+        if (apiResponse.ok) {
+          const data = await apiResponse.json();
+          products = data;
+        } else {
+          throw new Error('API no disponible');
+        }
 
-  const debounceTimer = setTimeout(fetchProducts, 300);
-  return () => clearTimeout(debounceTimer);
-}, [searchTerm]);
+        const filtered = products
+          .filter(p => p.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
+          .slice(0, 4);
+
+        setSuggestions(filtered);
+        setUsingMock(false);
+      } catch (error) {
+        console.log('Usando datos mock:', error.message);
+        setUsingMock(true);
+        
+        // Fallback a mock data con manejo correcto de imágenes
+        const filtered = productosMock
+          .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .slice(0, 4)
+          .map(p => ({
+            id: p.id,
+            nombre: p.name,
+            // Asegurar que la ruta de la imagen apunte a /Images/
+            imagen: `/Images/${p.image}` // Asume que p.image es el nombre del archivo
+          }));
+
+        setSuggestions(filtered);
+      }
+    };
+
+    const debounceTimer = setTimeout(fetchProducts, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`api/productos?busqueda=${encodeURIComponent(searchTerm)}`);
+      navigate(`/productos?busqueda=${encodeURIComponent(searchTerm)}`);
     }
   };
 
   const handleSuggestionClick = (product) => {
     setSearchTerm(product.nombre);
     setSuggestions([]);
-    navigate(`api/productos?busqueda=${encodeURIComponent(product.nombre)}`);
+    navigate(`/productos?busqueda=${encodeURIComponent(product.nombre)}`);
+  };
+
+  // Función para manejar errores en imágenes
+  const handleImageError = (e) => {
+    e.target.src = `${process.env.PUBLIC_URL}/Images/placeholder.png`;
   };
 
   return (
@@ -67,13 +89,18 @@ useEffect(() => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="btn-cta" type="submit" >
+          <button className="btn-cta" type="submit">
             Ver productos
           </button>
         </div>
         
         {suggestions.length > 0 && (
           <div className="suggestions-container">
+            {usingMock && (
+              <div className="mock-warning">
+                Mostrando datos de demostración (API no disponible)
+              </div>
+            )}
             {suggestions.map((product) => (
               <div 
                 key={product.id} 
@@ -82,11 +109,9 @@ useEffect(() => {
               >
                 <div className="suggestion-image-container">
                   <img 
-                    src={`${process.env.PUBLIC_URL}${product.imagen}`} 
+                    src={`${process.env.PUBLIC_URL}${product.imagen}`}
                     alt={product.nombre}
-                    onError={(e) => {
-                      e.target.src = `${process.env.PUBLIC_URL}/images/placeholder.png`;
-                    }}
+                    onError={handleImageError}
                   />
                 </div>
                 <span className="suggestion-name">{product.nombre}</span>

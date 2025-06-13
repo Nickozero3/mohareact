@@ -1,7 +1,10 @@
 /* Hero Component Styles */
 .hero {
-  background-image: 
-    linear-gradient(to right, rgba(34, 34, 34, 0.8), rgba(68, 68, 68, 0.8)),
+  background-image: linear-gradient(
+      to right,
+      rgba(34, 34, 34, 0.8),
+      rgba(68, 68, 68, 0.8)
+    ),
     url("../../../public/images/fondo.jpg");
   background-size: cover;
   background-position: center;
@@ -18,7 +21,7 @@
   display: grid;
   grid-column: 1;
   place-content: center;
-  grid-template-columns: repeat(1,auto);
+  grid-template-columns: repeat(1, auto);
   min-height: 100px;
   max-width: 400px;
 }
@@ -57,7 +60,8 @@ h1 {
 }
 
 .mi-texto {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+    "Inter", sans-serif;
   font-weight: 500;
   font-size: 28px;
   color: #ffffff;
@@ -69,12 +73,11 @@ h1 {
   .hero {
     padding: 2rem 1rem;
   }
-  
+
   input#searchInput {
     max-width: 90%;
     margin-bottom: 10px;
   }
-  
 }
 
 @media (min-width: 768px) {
@@ -83,13 +86,12 @@ h1 {
     align-items: center;
     justify-content: center;
   }
-  
+
   .hero input {
     margin-right: 1rem;
     margin-bottom: 0;
   }
 }
-
 
 .search-container {
   position: relative;
@@ -116,9 +118,11 @@ h1 {
   background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  margin-top: 5px;
+  max-height: 300px;
+  top: 45%;
+  overflow-y: auto;
 }
 
 .suggestion-item {
@@ -160,8 +164,6 @@ h1 {
   background: #0056b3;
 }
 
-
-
 .search-container {
   max-width: 600px;
   margin: 1rem auto;
@@ -193,19 +195,6 @@ h1 {
 
 .btn-cta:hover {
   background: #0056b3;
-}
-
-/* Sugerencias */
-.suggestions-container {
-  position: absolute;
-  width: 100%;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 100;
-  margin-top: 0.5rem;
-  max-height: 300px;
-  overflow-y: auto;
 }
 
 .suggestion-item {
@@ -253,7 +242,7 @@ h1 {
   .search-input-wrapper {
     flex-direction: column;
   }
-  
+
   .btn-cta {
     width: 100%;
   }
