@@ -130,7 +130,7 @@ const ListarProductos = () => {
     }
     setSelectedProduct(producto);
     setShowEditModal(true);
-    console.log("showEditModal seteado a true");
+    // console.log("showEditModal seteado a true");
   };
 
   // Sugerencias y filtro de productos
@@ -263,10 +263,7 @@ const ListarProductos = () => {
                 <td>{producto.id}</td>
                 <td>
                   <a
-                    href={`/seleccionado/${producto.id}-${producto.nombre
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")
-                      .replace(/[^\w-]/g, "")}`}
+                    href={`/seleccionado/${producto.id}-${producto.nombre}`}
                   >
                     {producto.nombre}
                   </a>
