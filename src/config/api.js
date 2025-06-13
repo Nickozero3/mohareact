@@ -33,7 +33,15 @@ export const createProducto = (data) => axiosInstance.post('/api/productos', dat
     'Content-Type': 'multipart/form-data'
   }
 });
-export const updateProducto = (id, data) => axiosInstance.put(`/api/productos/${id}`, data);
+
+export const updateProducto = (id, formData) => {
+  return axiosInstance.put(`/api/productos/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};
+
 export const deleteProducto = (id) => axiosInstance.delete(`/api/productos/${id}`);
 
 export const getCategorias = () => axiosInstance.get('/api/categorias');

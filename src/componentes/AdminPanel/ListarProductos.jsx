@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteProducto } from "../../config/api";
 import SubirDatos from "./Subirdatos";
+import ModalEditarProducto from "../Hud/EditarProducto";
 import { FaPlus } from "react-icons/fa";
 import "./ListaProductos.css";
 
@@ -13,6 +14,8 @@ const ListarProductos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Obtener productos iniciales
   useEffect(() => {
@@ -30,18 +33,18 @@ const ListarProductos = () => {
     };
     fetchProductos();
   }, []);
-  
-  useEffect(() => {
-  if (showModal) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = '';
-  }
 
-  return () => {
-    document.body.style.overflow = ''; // limpiar en caso de que se desmonte
-  };
-}, [showModal]);
+  useEffect(() => {
+    if (showModal || showEditModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showModal, showEditModal]);
 
   // Eliminar producto
   const eliminarProducto = async (id) => {
@@ -58,31 +61,79 @@ const ListarProductos = () => {
     }
   };
 
- //modificar Producto 
-  const modificarProducto = async (id, updatedData) => {
+  // Modificar producto (PUT)// Función modificarProducto actualizada
+  const modificarProducto = async (id, formData) => {
+    console.log(`Iniciando modificación para producto ID: ${id}`);
+
     try {
-      const response = await fetch(`http://localhost:5000/api/productos/${id}` , {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      });
+      // Verificar contenido de FormData
+      console.log("Contenido de FormData:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/productos/${id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      console.log("Respuesta recibida, status:", response.status);
+
+      // Manejar casos donde la respuesta no es JSON
       if (!response.ok) {
-        throw new Error("Error al modificar el producto");
+        const errorText = await response.text();
+        console.error("Error del servidor:", errorText);
+        throw new Error(errorText || `Error ${response.status}`);
       }
-      const updatedProduct = await response.json();
-        setProductos((prev) =>
-          prev.map((p) => (p.id === id ? updatedProduct : p))
+
+      const result = await response.json();
+      console.log("Respuesta JSON:", result);
+
+      // Validación estricta de la respuesta
+      if (!result.success || !result.producto) {
+        console.error("Respuesta inválida:", result);
+        throw new Error(
+          result.error || "La respuesta no contiene el producto actualizado"
         );
-      } catch (error) {
-        console.error("Error al modificar el producto:", error);
-        alert("No se pudo modificar el producto");
       }
-    };
 
+      console.log("Producto actualizado recibido:", result.producto);
 
-  // Generar sugerencias y filtrar tabla (buscar por nombre o id)
+      // Actualizar estado
+      setProductos((prev) =>
+        prev.map((p) => (p.id === result.producto.id ? result.producto : p))
+      );
+      setFilteredProductos((prev) =>
+        prev.map((p) => (p.id === result.producto.id ? result.producto : p))
+      );
+
+      return result.producto;
+    } catch (error) {
+      console.error("Error en modificarProducto:", {
+        message: error.message,
+        stack: error.stack,
+      });
+      throw error;
+    }
+  };
+
+  // Manejar clic en editar
+  const handleEditClick = (id) => {
+    const producto = productos.find((p) => p.id === Number(id));
+    console.log("handleEditClick - producto encontrado:", producto);
+    if (!producto) {
+      alert("No se encontró el producto.");
+      return;
+    }
+    setSelectedProduct(producto);
+    setShowEditModal(true);
+    console.log("showEditModal seteado a true");
+  };
+
+  // Sugerencias y filtro de productos
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
       setSuggestions([]);
@@ -91,16 +142,15 @@ const ListarProductos = () => {
     }
 
     const term = searchTerm.toLowerCase();
-    const filtered = productos.filter((p) =>
-      p.nombre.toLowerCase().includes(term) ||
-      p.id.toString().includes(term)
+    const filtered = productos.filter(
+      (p) =>
+        p.nombre.toLowerCase().includes(term) || p.id.toString().includes(term)
     );
 
     setSuggestions(filtered.slice(0, 5));
     setFilteredProductos(filtered);
   }, [searchTerm, productos]);
 
-  // Manejar búsqueda
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -108,7 +158,6 @@ const ListarProductos = () => {
     }
   };
 
-  // Manejar clic en sugerencia
   const handleSuggestionClick = (product) => {
     setSearchTerm(product.nombre);
     setSuggestions([]);
@@ -119,7 +168,6 @@ const ListarProductos = () => {
     );
   };
 
-  // Manejar producto añadido
   const handleProductAdded = (newProduct) => {
     setProductos((prev) => [...prev, newProduct]);
     setFilteredProductos((prev) => [...prev, newProduct]);
@@ -147,8 +195,7 @@ const ListarProductos = () => {
           </button>
         </form>
 
-        {/* Botón para añadir producto */}
-
+        {/* Botón añadir producto */}
         <div className="add-button-container">
           <button onClick={() => setShowModal(true)} className="add-button">
             <FaPlus className="plus-icon" />
@@ -172,7 +219,7 @@ const ListarProductos = () => {
         )}
       </div>
 
-      {/* Modal para añadir producto */}
+      {/* Modal añadir producto */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -190,9 +237,16 @@ const ListarProductos = () => {
         </div>
       )}
 
-     
+      {/* Modal editar producto */}
+      {showEditModal && selectedProduct && (
+        <ModalEditarProducto
+          producto={selectedProduct}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={modificarProducto}
+        />
+      )}
 
-      {/* Tabla de productos */}
+      {/* Tabla productos */}
       <table className="productos-table">
         <thead>
           <tr>
@@ -207,11 +261,20 @@ const ListarProductos = () => {
             filteredProductos.map((producto) => (
               <tr key={producto.id}>
                 <td>{producto.id}</td>
-                <td>{producto.nombre}</td>
+                <td>
+                  <a
+                    href={`/seleccionado/${producto.id}-${producto.nombre
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^\w-]/g, "")}`}
+                  >
+                    {producto.nombre}
+                  </a>
+                </td>
                 <td>${producto.precio}</td>
                 <td>
                   <button
-                    onClick={() => modificarProducto(producto.id)}
+                    onClick={() => handleEditClick(producto.id)}
                     className="action-button edit-button"
                   >
                     Editar

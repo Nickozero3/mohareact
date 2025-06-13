@@ -159,6 +159,10 @@ input[type="file"] {
   color: white;
 }
 
+.image-preview {
+  max-width: 200px;
+}
+
 .cancel-btn {
   background-color: #dc3545;
   color: white;
