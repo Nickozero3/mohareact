@@ -9,27 +9,29 @@ const cors = require("cors");
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://mohareact-production.up.railway.app',
-  'https://mohareact-backend.up.railway.app'
+  "http://localhost:3000",
+  "https://mohareact-production.up.railway.app",
+  "https://mohareact-backend.up.railway.app",
 ];
 // Configuración CORS
 // Configuración CORREGIDA:
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    console.error("Bloqueado por CORS:", origin);
-    callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      console.error("Bloqueado por CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  })
+);
 
 // Middleware para imágenes estáticas
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
@@ -133,16 +135,14 @@ app.get("/api/cleanup-images", async (req, res) => {
   result.success ? res.json(result) : res.status(500).json(result);
 });
 
-app.get('/api/health', (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
-    status: 'active',
+    status: "active",
     environment: process.env.NODE_ENV,
-    database: pool ? 'connected' : 'disconnected',
-    timestamp: new Date()
+    database: pool ? "connected" : "disconnected",
+    timestamp: new Date(),
   });
 });
-
-
 
 // Crear producto
 app.post("/api/productos", upload.single("imagen"), async (req, res) => {
@@ -329,8 +329,8 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor con limpieza automática
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0" ,() => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Servidor backend listo en el puerto ${PORT}`);
   setTimeout(async () => {
     await cleanUnusedImages();
   }, 3000);
