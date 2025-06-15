@@ -2,17 +2,15 @@
 import axios from "axios";
 
 
-// Configuración para desarrollo/producción
+// src/api.js
 export const API_CONFIG = {
-  BASE_URL: process.env.NODE_ENV === 'production'
-    ? "https://mohareact-production.up.railway.app/api" // Tu URL real de Railway
-    : 'http://localhost:5000',
-  TIMEOUT: 15000,  // 15 segundos para entornos cloud
+  BASE_URL: "https://mohareact-production.up.railway.app", // Usa tu URL de Railway
+  TIMEOUT: 15000,
   DEFAULT_HEADERS: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    "Content-Type": "application/json",
+  },
 };
+
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
