@@ -92,6 +92,7 @@ const CartPopup = () => {
                           ? item.imagen
                           : "/Images/placeholder.png"
                       }
+                      
                       alt={item.name}
                       className="item-image"
                     />
