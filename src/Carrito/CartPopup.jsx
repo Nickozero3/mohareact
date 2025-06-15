@@ -1,6 +1,5 @@
 import { useCart } from "./CartContext";
 import { useEffect, useRef } from "react";
-import { FaWhatsapp } from "react-icons/fa";
 
 const CartPopup = () => {
   const {
@@ -86,7 +85,9 @@ const CartPopup = () => {
                 {cartItems.map((item) => (
                   <div key={item.id} className="cart-item">
                     <img
-                      src={item.image || item.imagen || "Images/placeholder.png"}
+                      src={
+                        item.image || item.imagen || "Images/placeholder.png"
+                      }
                       alt={item.name}
                       className="item-image"
                     />
@@ -133,10 +134,6 @@ const CartPopup = () => {
                   className="checkout-btn whatsapp-btn"
                   onClick={enviarWhatsApp}
                 >
-                  {/* <FaWhatsapp
-                    size={15}
-                    style={{ marginRight: "10px", marginBottom: "10px" }}
-                  /> */}
                   Completar compra por WhatsApp
                 </button>
               </div>
