@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
+import { useCart } from '../Carrito/CartContext'; // Ajusta la ruta según tu estructura
 
-const ProductCard = ({ product, addToCart }) => {
+
+const ProductCard = ({ product}) => {
+  const [added, setAdded] = useState(false);
   const navigate = useNavigate();
+   const { addToCart } = useCart(); // Destructuración correcta
+
   const isFromAPI = product.image?.includes("/uploads/");
   const initialSrc = isFromAPI
     ? `${process.env.PUBLIC_URL}${product.image}`
@@ -33,7 +38,7 @@ const ProductCard = ({ product, addToCart }) => {
 
   const handleCardClick = (e) => {
     // Evitar la navegación si el click proviene del botón
-    if (!e.target.closest('.product-actions')) {
+    if (!e.target.closest(".product-actions")) {
       navigate(`/seleccionado/${product.id}`);
     }
   };
@@ -54,21 +59,22 @@ const ProductCard = ({ product, addToCart }) => {
           </div>
         )}
       </div>
-
       <div className="product-info">
         <h3>{product.name}</h3>
         <p className="product-price">${product.price}</p>
       </div>
 
-      <div className="product-actions" onClick={(e) => e.stopPropagation()}>
+      <div className="product-actions">
         <button
-          className="product-button add-to-cart"
+          className={`product-button add-to-cart ${added ? "added" : ""}`}
           onClick={(e) => {
             e.stopPropagation();
             addToCart(product);
+            setAdded(true);
+            setTimeout(() => setAdded(false), 1000);
           }}
         >
-          Añadir al carrito
+          {added ? "✓ Añadido" : "Añadir al carrito"}
         </button>
       </div>
     </div>

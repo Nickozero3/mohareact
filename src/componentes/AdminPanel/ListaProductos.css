@@ -193,7 +193,6 @@
 /* Estilos generales para botones */
 button {
   cursor: pointer;
-  min-width: 100px;
   padding: 10px 15px;
   transition: all 0.2s;
 }
@@ -214,10 +213,3 @@ button {
   color: #333;
 }
 
-/* Estilos generales para botones */
-button {
-  cursor: pointer;
-  min-width: 100px;
-  padding: 10px 15px;
-  transition: all 0.2s;
-}
