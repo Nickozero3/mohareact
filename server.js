@@ -12,6 +12,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://mohareact-production.up.railway.app'
+  "https://mohareact-production.up.railway.app/admin", // Tu URL real de Railway
 ];
 
 // Configuración CORS mejorada
@@ -64,17 +65,26 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // Conexión a MySQL mejorada
+//mysql://root:vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ@caboose.proxy.rlwy.net:42356/railway 
+
 const pool = mysql.createPool({
-  host: process.env.MYSQLHOST || process.env.DB_HOST || "localhost",
-  port: process.env.MYSQLPORT || 3306,
-  user: process.env.MYSQLUSER || process.env.DB_USER || "root",
-  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || "",
-  database: process.env.MYSQLDATABASE || process.env.DB_NAME || "railway",
+  // Opción 1: Usar la URL de conexión completa (recomendado para Railway)
+  uri: process.env.DATABASE_URL || 'mysql://root:vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ@caboose.proxy.rlwy.net:42356/cellstore_bd',
+  
+  // Opción 2: Configuración por partes (alternativa)
+  host: process.env.MYSQLHOST || 'caboose.proxy.rlwy.net',
+  port: process.env.MYSQLPORT || 42356,
+  user: process.env.MYSQLUSER || 'root',
+  password: process.env.MYSQLPASSWORD || 'vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ',
+  database: process.env.MYSQLDATABASE || 'railway', // Nombre exacto de tu BD
+  
+  // Configuración adicional
   waitForConnections: true,
   connectionLimit: 10,
-  ssl: process.env.MYSQL_SSL ? { rejectUnauthorized: false } : undefined
+  ssl: {
+    rejectUnauthorized: false // Obligatorio para Railway
+  }
 });
-
 // Verificación de conexión a la base de datos
 async function testDatabaseConnection() {
   try {
