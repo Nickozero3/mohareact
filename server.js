@@ -10,7 +10,7 @@ const app = express();
 
 // Configuración CORS
 app.use(cors({
-  origin: 'http://localhost:3000' || process.env.FRONTEND_URL || '*',
+  origin: 'http://localhost:3000' || process.env.FRONTEND_URL || 'https://mohareact-production.up.railway.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
