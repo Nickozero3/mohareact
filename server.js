@@ -37,6 +37,16 @@ const storage = multer.diskStorage({
   },
 });
 
+// Agrega esta prueba en server.js
+pool.getConnection()
+  .then(conn => {
+    console.log('✅ Conexión a MySQL exitosa!');
+    conn.release();
+  })
+  .catch(err => {
+    console.error('❌ Error conectando a MySQL:', err);
+  });
+
 const fileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/png", "image/webp"];
   if (allowed.includes(file.mimetype)) cb(null, true);
