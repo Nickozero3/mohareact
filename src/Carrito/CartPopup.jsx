@@ -25,7 +25,7 @@ const CartPopup = () => {
     mensaje += "Detalle del carrito: \n\n";
 
     cartItems.forEach((item) => {
-      mensaje += ` \t◦ ${item.name}\n`;
+      mensaje += `  ${item.name}\n`;
       mensaje += `   Cantidad: ${item.quantity}\n`;
       mensaje += `   Precio unitario: $${item.price.toFixed(2)}\n`;
       mensaje += `   Subtotal: $${(item.price * item.quantity).toFixed(2)}\n\n`;
@@ -86,7 +86,11 @@ const CartPopup = () => {
                   <div key={item.id} className="cart-item">
                     <img
                       src={
-                        "/Images/item.image" || item.imagen || "Images/placeholder.png"
+                        item.image
+                          ? `/Images/${item.image}`
+                          : item.imagen
+                          ? item.imagen
+                          : "/Images/placeholder.png"
                       }
                       alt={item.name}
                       className="item-image"
