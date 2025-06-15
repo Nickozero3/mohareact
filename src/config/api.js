@@ -13,7 +13,6 @@ export const API_CONFIG = {
     'Accept': 'application/json'
   }
 };
-
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
