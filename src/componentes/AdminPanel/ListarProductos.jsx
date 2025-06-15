@@ -6,6 +6,11 @@ import ModalEditarProducto from "../Hud/EditarProducto";
 import { FaPlus } from "react-icons/fa";
 import "./ListaProductos.css";
 
+
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://mohareact-production.up.railway.app'
+  : 'http://localhost:5000';
+
 const ListarProductos = () => {
   const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
@@ -21,7 +26,7 @@ const ListarProductos = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/productos");
+        const response = await fetch(`${API_BASE_URL}/api/productos`);
         const data = await response.json();
         setProductos(data);
         setFilteredProductos(data);
