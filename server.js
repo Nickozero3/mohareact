@@ -39,7 +39,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 const pool = mysql.createPool({
-  host: 'caboose.proxy.rlwy.net',
+  host: 'mysql-production-d696.up.railway.app',
   user: 'root',
   password: 'vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ',
   database: 'railway',
