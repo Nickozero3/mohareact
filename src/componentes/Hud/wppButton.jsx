@@ -4,7 +4,7 @@ import './wppButton.css';
 
 const WhatsAppButton = () => {
   const phoneNumber = '5493548554840'; // Cambialo por tu número real
-  const message = encodeURIComponent('Hola, estoy interesado en un producto de CellStore.');
+  const message = encodeURIComponent('Hola, estoy interesado en un producto de *****.');
 
 
   return (

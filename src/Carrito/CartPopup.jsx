@@ -21,7 +21,7 @@ const CartPopup = () => {
     }
 
     // Crear mensaje estructurado
-    let mensaje = " -- Pedido desde CellStore Web --\n\n";
+    let mensaje = " -- Pedido desde ***** Web --\n\n";
     mensaje += "Detalle del carrito: \n\n";
 
     cartItems.forEach((item) => {

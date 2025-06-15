@@ -9,12 +9,10 @@ import axios from "axios";
 //     "Content-Type": "application/json",
 //   },
 // };
-import axios from 'axios';
-
 // Configuración para desarrollo/producción
 export const API_CONFIG = {
   BASE_URL: process.env.NODE_ENV === 'production'
-    ? 'https://mohareact-production.up.railway.app'  // Tu URL real de Railway
+    ? "https://mohareact-production.up.railway.app" // Tu URL real de Railway
     : 'http://localhost:5000',
   TIMEOUT: 15000,  // 15 segundos para entornos cloud
   DEFAULT_HEADERS: {
@@ -30,11 +28,7 @@ const axiosInstance = axios.create({
   withCredentials: false,
   // Configuración adicional para estabilidad
   maxRedirects: 0,
-  httpAgent: new http.Agent({ keepAlive: true }),
-  httpsAgent: new https.Agent({ 
-    keepAlive: true,
-    rejectUnauthorized: false  // Necesario para Railway
-  })
+
 });
 
 // Interceptor mejorado
