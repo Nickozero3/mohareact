@@ -1,14 +1,7 @@
 // src/api.js
 import axios from "axios";
 
-// export const API_CONFIG = {
-//   BASE_URL:
-//     "http://localhost:5000" || "https://mohareact-production.up.railway.app",
-//   TIMEOUT: 5000,
-//   DEFAULT_HEADERS: {
-//     "Content-Type": "application/json",
-//   },
-// };
+
 // Configuración para desarrollo/producción
 export const API_CONFIG = {
   BASE_URL: process.env.NODE_ENV === 'production'

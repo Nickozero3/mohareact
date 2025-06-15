@@ -13,12 +13,21 @@ const app = express();
 // Configuración CORS
 app.use(
   cors({
-    origin:
-      "http://localhost:3000" ||
-      process.env.FRONTEND_URL ||
-      "https://mohareact-production.up.railway.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: (origin, callback) => {
+      // Permite requests sin origen (como mobile apps o curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        const msg = `Origen '${origin}' no permitido por CORS`;
+        return callback(new Error(msg), false);
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
   })
 );
 
