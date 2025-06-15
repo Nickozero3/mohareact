@@ -14,25 +14,19 @@ const allowedOrigins = [
   'https://mohareact-backend.up.railway.app'
 ];
 // Configuración CORS
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-
-        if (allowedOrigins.includes(origin)) {
-          callback(null, true);
-        }
-      } else {
-        console.error("Bloqueado por CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
-);
+// Configuración CORREGIDA:
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    console.error("Bloqueado por CORS:", origin);
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+}));
 
 // Middleware para imágenes estáticas
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
@@ -138,6 +132,17 @@ app.get("/api/cleanup-images", async (req, res) => {
   const result = await cleanUnusedImages();
   result.success ? res.json(result) : res.status(500).json(result);
 });
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'active',
+    environment: process.env.NODE_ENV,
+    database: pool ? 'connected' : 'disconnected',
+    timestamp: new Date()
+  });
+});
+
+
 
 // Crear producto
 app.post("/api/productos", upload.single("imagen"), async (req, res) => {
@@ -324,7 +329,7 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor con limpieza automática
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, "0,0,0,0" ,() => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   setTimeout(async () => {
     await cleanUnusedImages();
