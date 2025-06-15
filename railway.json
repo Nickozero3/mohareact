@@ -1,0 +1,8 @@
+{
+  "build": {
+    "nixpacks": {
+      "installCommand": "npm install --legacy-peer-deps",
+      "buildCommand": "npm run build"
+    }
+  }
+}
