@@ -35,6 +35,8 @@ app.use(
 );
 
 // Middleware para imágenes estáticas
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
 // Configuración Multer
