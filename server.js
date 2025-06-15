@@ -16,8 +16,6 @@ const PORT = process.env.PORT || 5000;
 // Configuración CORS para producción y desarrollo
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://mohareact-production.up.railway.app',
-  'https://mohareact-backend.up.railway.app'
 ];
 
 app.use(cors({
@@ -70,16 +68,14 @@ const upload = multer({ storage, fileFilter });
 // ======================
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'caboose.proxy.rlwy.net',
+  host: process.env.DB_HOST || 'localhost', // Cambiado a localhost
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ',
-  database: process.env.DB_NAME || 'railway',
-  port: process.env.DB_PORT || 42356,
+  password: process.env.DB_USER || '',
+  database: process.env.DB_NAME || 'cellstore_bd',
+  port: process.env.DB_PORT || 3306, // Puerto por defecto de MySQL
   waitForConnections: true,
   connectionLimit: 10,
-  ssl: process.env.NODE_ENV === 'production' ? { 
-    rejectUnauthorized: false 
-  } : null
+  ssl: null // SSL no es necesario en localhost
 });
 
 // Verificación de conexión a la base de datos

@@ -2,9 +2,8 @@
 import axios from "axios";
 
 
-// src/api.js
 export const API_CONFIG = {
-  BASE_URL: "https://backend-production-87f0.up.railway.app",  // Usa tu URL de Railway
+  BASE_URL: "http://localhost:5000",  // Asegúrate de incluir http://
   TIMEOUT: 15000,
   DEFAULT_HEADERS: {
     "Content-Type": "application/json",

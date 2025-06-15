@@ -35,7 +35,7 @@ const Layout = () => {
           <Link to={"/"}>
             <div className="logodiv">
               <img src="./apple.svg" alt="Logo" className="logo" />
-              <p className="parrafo">Cellstore</p>
+              <p className="parrafo">****</p>
             </div>
           </Link>
         </div>
