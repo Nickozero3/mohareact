@@ -8,6 +8,8 @@ const cors = require("cors");
 
 const app = express();
 
+
+
 // Configuración CORS
 app.use(
   cors({
@@ -60,10 +62,12 @@ const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "cellstore_bd",
+  database: process.env.DB_NAME || "railway",
   waitForConnections: true,
   connectionLimit: 10,
 });
+
+
 
 // Función de limpieza de imágenes
 async function cleanUnusedImages() {
