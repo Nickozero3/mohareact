@@ -9,26 +9,51 @@ import axios from "axios";
 //     "Content-Type": "application/json",
 //   },
 // };
+import axios from 'axios';
 
-// Configuración mejorada para desarrollo/producción
+// Configuración para desarrollo/producción
 export const API_CONFIG = {
-  BASE_URL: process.env.NODE_ENV === 'production' 
-    ? 'https://mohareact-production.up.railway.app' 
+  BASE_URL: process.env.NODE_ENV === 'production'
+    ? 'https://mohareact-production.up.railway.app'  // Tu URL real de Railway
     : 'http://localhost:5000',
-  TIMEOUT: 10000, // Aumentado a 10 segundos
+  TIMEOUT: 15000,  // 15 segundos para entornos cloud
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 };
 
-
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
   headers: API_CONFIG.DEFAULT_HEADERS,
-  withCredentials: false, // Permite enviar cookies y autenticación
+  withCredentials: false,
+  // Configuración adicional para estabilidad
+  maxRedirects: 0,
+  httpAgent: new http.Agent({ keepAlive: true }),
+  httpsAgent: new https.Agent({ 
+    keepAlive: true,
+    rejectUnauthorized: false  // Necesario para Railway
+  })
 });
+
+// Interceptor mejorado
+axiosInstance.interceptors.response.use(
+  response => response,
+  error => {
+    const errorDetails = {
+      message: error.message,
+      code: error.code,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method
+      },
+      response: error.response?.data
+    };
+    console.error('Error en la petición:', errorDetails);
+    return Promise.reject(error);
+  }
+);
 
 // Interceptor para manejar errores globalmente
 axiosInstance.interceptors.response.use(
