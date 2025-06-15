@@ -6,6 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
 
+
 const app = express();
 
 const allowedOrigins = [
@@ -135,12 +136,13 @@ app.get("/api/cleanup-images", async (req, res) => {
   result.success ? res.json(result) : res.status(500).json(result);
 });
 
-app.get("/api/health", (req, res) => {
+// Ruta de health check mejorada
+app.get('/api/health', (req, res) => {
   res.json({
-    status: "active",
+    status: 'active',
+    serverTime: new Date(),
     environment: process.env.NODE_ENV,
-    database: pool ? "connected" : "disconnected",
-    timestamp: new Date(),
+    port: PORT
   });
 });
 
@@ -328,7 +330,8 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor con limpieza automática
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000 || 8080; // ¡Crucial para Railway!
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Servidor backend listo en el puerto ${PORT}`);
   setTimeout(async () => {
