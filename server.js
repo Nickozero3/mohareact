@@ -65,6 +65,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
+
+// Middleware para manejar preflight OPTIONS
+app.options('*', cors());
+
 // Función de limpieza de imágenes
 async function cleanUnusedImages() {
   try {
