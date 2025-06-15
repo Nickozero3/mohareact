@@ -1,106 +1,127 @@
-require("dotenv").config();
-const express = require("express");
-const multer = require("multer");
-const mysql = require("mysql2/promise");
-const path = require("path");
-const fs = require("fs");
-const cors = require("cors");
-
+require('dotenv').config();
+const express = require('express');
+const multer = require('multer');
+const mysql = require('mysql2/promise');
+const path = require('path');
+const fs = require('fs');
+const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
+// ======================
+// Configuración Inicial
+// ======================
+
+// Configuración CORS para producción y desarrollo
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://mohareact-production.up.railway.app",
-  "https://mohareact-backend.up.railway.app",
+  'http://localhost:3000',
+  'https://mohareact-production.up.railway.app',
+  'https://mohareact-backend.up.railway.app'
 ];
-// Configuración CORS
-// Configuración CORREGIDA:
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      console.error("Bloqueado por CORS:", origin);
-      callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
-);
 
-// Middleware para imágenes estáticas
-app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    console.error('Bloqueado por CORS:', origin);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 
-app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+// Middleware para archivos estáticos
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+// ======================
 // Configuración Multer
+// ======================
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public", "uploads"));
+    const uploadsPath = path.join(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadsPath)) {
+      fs.mkdirSync(uploadsPath, { recursive: true });
+    }
+    cb(null, uploadsPath);
   },
   filename: (req, file, cb) => {
     const safeName = file.originalname
-      .replace(/\s+/g, "_")
-      .replace(/[^\w.-]/gi, "");
+      .replace(/\s+/g, '_')
+      .replace(/[^\w.-]/gi, '');
     const uniqueName = `${Date.now()}-${safeName}`;
     cb(null, uniqueName);
-  },
+  }
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowed = ["image/jpeg", "image/png", "image/webp"];
+  const allowed = ['image/jpeg', 'image/png', 'image/webp'];
   if (allowed.includes(file.mimetype)) cb(null, true);
-  else cb(new Error("Solo se permiten imágenes JPEG, PNG o WEBP"), false);
+  else cb(new Error('Solo se permiten imágenes JPEG, PNG o WEBP'), false);
 };
 
 const upload = multer({ storage, fileFilter });
 
+// ======================
+// Conexión a MySQL
+// ======================
+
 const pool = mysql.createPool({
-  host: "caboose.proxy.rlwy.net",
-  user: "root",
-  password: "vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ",
-  database: "railway",
-  port: 42356,
+  host: process.env.DB_HOST || 'caboose.proxy.rlwy.net',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'vCtTosbYRiFVRmCflclIbPFzkJeSkbPQ',
+  database: process.env.DB_NAME || 'railway',
+  port: process.env.DB_PORT || 42356,
   waitForConnections: true,
   connectionLimit: 10,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? {
-          rejectUnauthorized: false,
-        }
-      : null, // Desactiva SSL en desarrollo si causa problemas
+  ssl: process.env.NODE_ENV === 'production' ? { 
+    rejectUnauthorized: false 
+  } : null
 });
 
-// Middleware para manejar preflight OPTIONS
-app.options("*", cors());
+// Verificación de conexión a la base de datos
+const checkDBConnection = async () => {
+  try {
+    const conn = await pool.getConnection();
+    console.log('✅ Conexión a MySQL establecida');
+    conn.release();
+    return true;
+  } catch (err) {
+    console.error('❌ Error de conexión a MySQL:', err.message);
+    return false;
+  }
+};
 
-// Función de limpieza de imágenes
+// ======================
+// Funciones de Utilidad
+// ======================
+
 async function cleanUnusedImages() {
   try {
-    console.log("🔍 Iniciando limpieza de imágenes...");
+    console.log('🔍 Iniciando limpieza de imágenes...');
     const [products] = await pool.query(
-      "SELECT imagen FROM productos WHERE imagen IS NOT NULL"
+      'SELECT imagen FROM productos WHERE imagen IS NOT NULL'
     );
     const usedImages = products
       .map((p) => (p.imagen ? path.basename(p.imagen) : null))
       .filter(Boolean);
 
-    const uploadsPath = path.join(__dirname, "public", "uploads");
+    const uploadsPath = path.join(__dirname, 'public', 'uploads');
     if (!fs.existsSync(uploadsPath)) {
       fs.mkdirSync(uploadsPath, { recursive: true });
       return {
         success: true,
-        message: "📁 Carpeta uploads creada",
-        deletedCount: 0,
+        message: '📁 Carpeta uploads creada',
+        deletedCount: 0
       };
     }
 
     const allFiles = fs.readdirSync(uploadsPath);
     const imageFiles = allFiles.filter((file) =>
-      [".jpg", ".jpeg", ".png", ".webp"].includes(
+      ['.jpg', '.jpeg', '.png', '.webp'].includes(
         path.extname(file).toLowerCase()
       )
     );
@@ -122,39 +143,45 @@ async function cleanUnusedImages() {
       success: true,
       totalImages: imageFiles.length,
       unusedImages: unusedImages.length,
-      deletedCount,
+      deletedCount
     };
   } catch (error) {
-    console.error("🔥 Error en limpieza:", error);
+    console.error('🔥 Error en limpieza:', error);
     return { success: false, error: error.message };
   }
 }
 
+// ======================
+// Endpoints de la API
+// ======================
+
+// Health Check mejorado
+app.get('/api/health', async (req, res) => {
+  const dbStatus = await checkDBConnection();
+  res.json({
+    status: 'active',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date(),
+    port: PORT,
+    db: dbStatus ? 'connected' : 'disconnected'
+  });
+});
+
 // Endpoint para limpieza manual
-app.get("/api/cleanup-images", async (req, res) => {
+app.get('/api/cleanup-images', async (req, res) => {
   const result = await cleanUnusedImages();
   result.success ? res.json(result) : res.status(500).json(result);
 });
 
-// Ruta de health check mejorada
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'active',
-    serverTime: new Date(),
-    environment: process.env.NODE_ENV,
-    port: PORT
-  });
-});
-
-// Crear producto
-app.post("/api/productos", upload.single("imagen"), async (req, res) => {
+// CRUD de Productos
+app.post('/api/productos', upload.single('imagen'), async (req, res) => {
   try {
     if (!req.file)
-      return res.status(400).json({ error: "La imagen es requerida" });
+      return res.status(400).json({ error: 'La imagen es requerida' });
 
     const { nombre, descripcion, precio, categoria, subcategoria } = req.body;
     if (!nombre || !precio || !categoria || !subcategoria) {
-      return res.status(400).json({ error: "Faltan campos obligatorios" });
+      return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
     const [result] = await pool.query(
@@ -166,96 +193,66 @@ app.post("/api/productos", upload.single("imagen"), async (req, res) => {
         parseFloat(precio),
         categoria,
         subcategoria,
-        `/uploads/${req.file.filename}`,
+        `/uploads/${req.file.filename}`
       ]
     );
 
     res.json({ success: true, id: result.insertId });
   } catch (error) {
-    console.error("Error al guardar producto:", error);
-    res.status(500).json({ error: "Error al guardar el producto" });
+    console.error('Error al guardar producto:', error);
+    res.status(500).json({ error: 'Error al guardar el producto' });
   }
 });
 
-// Eliminar producto
-app.delete("/api/productos/:id", async (req, res) => {
-  const { id } = req.params;
+app.get('/api/productos', async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT imagen FROM productos WHERE id = ?",
-      [id]
-    );
-    if (rows.length === 0)
-      return res.status(404).json({ error: "Producto no encontrado" });
-
-    const imagePath = path.join(__dirname, "public", rows[0].imagen);
-    await pool.query("DELETE FROM productos WHERE id = ?", [id]);
-
-    fs.unlink(imagePath, (err) => {
-      if (err) console.warn("No se pudo eliminar la imagen:", err.message);
-    });
-
-    res.json({ success: true, message: "Producto eliminado correctamente" });
-  } catch (error) {
-    console.error("Error al eliminar producto:", error);
-    res.status(500).json({ error: "Error al eliminar producto" });
-  }
-});
-
-// Obtener todos los productos
-app.get("/api/productos", async (req, res) => {
-  try {
-    const [rows] = await pool.query("SELECT * FROM productos");
+    const [rows] = await pool.query('SELECT * FROM productos');
     res.json(rows);
   } catch (error) {
-    console.error("Error al obtener productos:", error);
-    res.status(500).json({ error: "Error al obtener productos" });
+    console.error('Error al obtener productos:', error);
+    res.status(500).json({ error: 'Error al obtener productos' });
   }
 });
 
-// Obtener producto por ID
-app.get("/api/productos/:id", async (req, res) => {
+app.get('/api/productos/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const [rows] = await pool.query("SELECT * FROM productos WHERE id = ?", [
-      id,
-    ]);
+    const [rows] = await pool.query('SELECT * FROM productos WHERE id = ?', [id]);
     if (rows.length === 0)
-      return res.status(404).json({ error: "Producto no encontrado" });
+      return res.status(404).json({ error: 'Producto no encontrado' });
     res.json(rows[0]);
   } catch (error) {
-    console.error("Error al obtener producto:", error);
-    res.status(500).json({ error: "Error al obtener producto" });
+    console.error('Error al obtener producto:', error);
+    res.status(500).json({ error: 'Error al obtener producto' });
   }
 });
 
-// Actualizar producto
-app.put("/api/productos/:id", upload.single("imagen"), async (req, res) => {
+app.put('/api/productos/:id', upload.single('imagen'), async (req, res) => {
   const { id } = req.params;
   try {
     const { nombre, precio, descripcion, categoria, subcategoria } = req.body;
     if (!nombre || !precio || !categoria || !subcategoria) {
       return res.status(400).json({
         success: false,
-        error: "Faltan campos obligatorios",
+        error: 'Faltan campos obligatorios'
       });
     }
 
     const [currentProduct] = await pool.query(
-      "SELECT imagen FROM productos WHERE id = ?",
+      'SELECT imagen FROM productos WHERE id = ?',
       [id]
     );
     if (currentProduct.length === 0) {
       return res.status(404).json({
         success: false,
-        error: "Producto no encontrado",
+        error: 'Producto no encontrado'
       });
     }
 
     let imagenPath = currentProduct[0].imagen;
     if (req.file) {
       if (imagenPath) {
-        const oldPath = path.join(__dirname, "public", imagenPath);
+        const oldPath = path.join(__dirname, 'public', imagenPath);
         if (fs.existsSync(oldPath)) {
           fs.unlinkSync(oldPath);
         }
@@ -279,35 +276,35 @@ app.put("/api/productos/:id", upload.single("imagen"), async (req, res) => {
         categoria,
         subcategoria,
         imagenPath,
-        id,
+        id
       ]
     );
 
     if (result.affectedRows === 0) {
       return res.status(500).json({
         success: false,
-        error: "No se pudo actualizar el producto",
+        error: 'No se pudo actualizar el producto'
       });
     }
 
     const [updatedProduct] = await pool.query(
-      "SELECT * FROM productos WHERE id = ?",
+      'SELECT * FROM productos WHERE id = ?',
       [id]
     );
 
     res.json({
       success: true,
       producto: updatedProduct[0],
-      message: "Producto actualizado correctamente",
+      message: 'Producto actualizado correctamente'
     });
   } catch (error) {
-    console.error("Error al actualizar producto:", error);
+    console.error('Error al actualizar producto:', error);
 
     if (req.file) {
       const tempPath = path.join(
         __dirname,
-        "public",
-        "uploads",
+        'public',
+        'uploads',
         req.file.filename
       );
       if (fs.existsSync(tempPath)) {
@@ -317,24 +314,87 @@ app.put("/api/productos/:id", upload.single("imagen"), async (req, res) => {
 
     res.status(500).json({
       success: false,
-      error: "Error interno del servidor",
-      details: error.message,
+      error: 'Error interno del servidor',
+      details: error.message
     });
   }
 });
 
-// Manejo de errores
-app.use((err, req, res, next) => {
-  console.error("Error del servidor:", err.message);
-  res.status(500).json({ error: "Error interno del servidor" });
+app.delete('/api/productos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await pool.query(
+      'SELECT imagen FROM productos WHERE id = ?',
+      [id]
+    );
+    if (rows.length === 0)
+      return res.status(404).json({ error: 'Producto no encontrado' });
+
+    const imagePath = path.join(__dirname, 'public', rows[0].imagen);
+    await pool.query('DELETE FROM productos WHERE id = ?', [id]);
+
+    fs.unlink(imagePath, (err) => {
+      if (err) console.warn('No se pudo eliminar la imagen:', err.message);
+    });
+
+    res.json({ success: true, message: 'Producto eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar producto:', error);
+    res.status(500).json({ error: 'Error al eliminar producto' });
+  }
 });
 
-// Iniciar servidor con limpieza automática
-const PORT = process.env.PORT || 5000 || 8080; // ¡Crucial para Railway!
+// ======================
+// Manejo de Errores
+// ======================
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Servidor backend listo en el puerto ${PORT}`);
+app.use((err, req, res, next) => {
+  console.error('‼️ Error del servidor:', err.stack);
+  res.status(500).json({ 
+    error: 'Error interno del servidor',
+    message: err.message 
+  });
+});
+
+// ======================
+// Inicio del Servidor
+// ======================
+
+const server = app.listen(PORT, '0.0.0.0', async () => {
+  console.log(`🚀 Servidor backend ejecutándose en puerto ${PORT}`);
+  console.log(`🟢 Entorno: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Verificar conexión a DB al iniciar
+  const dbConnected = await checkDBConnection();
+  if (!dbConnected) {
+    console.error('❌ Apagando servidor por fallo en DB...');
+    process.exit(1);
+  }
+
+  // Limpieza inicial de imágenes
   setTimeout(async () => {
-    await cleanUnusedImages();
-  }, 3000);
+    const result = await cleanUnusedImages();
+    console.log(`🔄 ${result.deletedCount} imágenes no utilizadas eliminadas`);
+  }, 10000);
+});
+
+// Manejo de señales para Railway
+process.on('SIGTERM', () => {
+  console.log('🛑 Recibida señal SIGTERM. Cerrando servidor...');
+  server.close(() => {
+    console.log('✋ Servidor HTTP cerrado');
+    pool.end(() => {
+      console.log('🔴 Conexiones de DB cerradas');
+      process.exit(0);
+    });
+  });
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('‼️ Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('‼️ Unhandled Rejection at:', promise, 'reason:', reason);
 });
