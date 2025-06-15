@@ -87,12 +87,11 @@ const CartPopup = () => {
                     <img
                       src={
                         item.image
-                          ? `/Images/${item.image}`
+                          ? `/images/${item.image}` // Si existe item.image
                           : item.imagen
-                          ? item.imagen
-                          : "/Images/placeholder.png"
+                          ? `/uploads/${item.imagen}` // Si existe item.imagen (nota: ruta diferente)
+                          : "/images/placeholder.png" // Imagen por defecto
                       }
-                      
                       alt={item.name}
                       className="item-image"
                     />

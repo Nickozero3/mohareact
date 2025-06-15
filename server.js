@@ -8,6 +8,11 @@ const cors = require("cors");
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://mohareact-production.up.railway.app',
+  'https://mohareact-backend.up.railway.app'
+];
 // Configuración CORS
 app.use(
   cors({
