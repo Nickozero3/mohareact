@@ -39,15 +39,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Agrega esta prueba en server.js
-pool.getConnection()
-  .then(conn => {
-    console.log('✅ Conexión a MySQL exitosa!');
-    conn.release();
-  })
-  .catch(err => {
-    console.error('❌ Error conectando a MySQL:', err);
-  });
 
 const fileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/png", "image/webp"];
@@ -65,8 +56,28 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || "cellstore_bd" || "railway",
   waitForConnections: true,
   connectionLimit: 10,
+  ssl: {
+    rejectUnauthorized: false, // Obligatorio para Railway
+  },
 });
 
+
+// Agrega esta prueba en server.js
+pool.getConnection()
+  .then(conn => {
+    console.log('✅ Conexión a MySQL exitosa!');
+    conn.release();
+  })
+  .catch(err => {
+    console.error('❌ Error conectando a MySQL:', err);
+  });
+
+  // Agrega esta función temporal en server.js para listar tablas
+async function listTables() {
+  const [tables] = await pool.query("SHOW TABLES");
+  console.log('📊 Tablas disponibles:', tables);
+}
+listTables();
 
 
 // Función de limpieza de imágenes
