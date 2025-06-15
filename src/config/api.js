@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:5000' || 'https://api.tu-dominio.com', 
+  BASE_URL: 'http://localhost:5000' || 'https://mohareact-production.up.railway.app', 
   TIMEOUT: 5000,
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json'
