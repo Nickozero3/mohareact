@@ -86,7 +86,7 @@ const CartPopup = () => {
                   <div key={item.id} className="cart-item">
                     <img
                       src={
-                        item.image || item.imagen || "Images/placeholder.png"
+                        "/Images/item.image" || item.imagen || "Images/placeholder.png"
                       }
                       alt={item.name}
                       className="item-image"
